@@ -1,13 +1,13 @@
 import { Link } from "@tanstack/react-router";
 
-const nav = [
+const nav: { to: string; label: string; exact?: boolean }[] = [
   { to: "/", label: "00 / Index", exact: true },
   { to: "/traditional", label: "01 / Traditional" },
   { to: "/drones", label: "02 / Drones" },
   { to: "/how-it-works", label: "03 / How it works" },
   { to: "/projects", label: "04 / Projects" },
   { to: "/impact", label: "05 / Impact" },
-] as const;
+];
 
 export function SiteHeader() {
   return (
