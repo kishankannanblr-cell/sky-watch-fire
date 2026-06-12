@@ -19,16 +19,16 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <div className="font-mono text-xs uppercase tracking-widest text-signal">Error 404</div>
-        <h1 className="mt-4 text-6xl font-medium">Off sheet</h1>
+        <h1 className="mt-4 text-6xl font-medium">Signal lost</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          The page you requested is not part of this field manual.
+          That route is off the flight plan.
         </p>
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 font-mono text-xs uppercase tracking-wider text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-foreground px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-background hover:bg-foreground/90"
           >
-            Return to index
+            Return home
           </Link>
         </div>
       </div>
@@ -74,13 +74,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Aero/Fire — Firefighting drones, redrawn from above" },
+      { title: "PYRA / Vision — AI firefighting drones" },
       {
         name: "description",
         content:
-          "An interactive field manual on firefighting drones: how they work, real-world projects, and how they're reshaping wildfire response.",
+          "AI-assisted firefighting drones: thermal cameras and YOLO models find humans through smoke and debris, relayed live to the incident commander.",
       },
-      { name: "author", content: "Aero/Fire" },
+      { name: "author", content: "PYRA Vision" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

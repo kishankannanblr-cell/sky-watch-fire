@@ -1,110 +1,78 @@
 
-# Firefighting Drones — Interactive Site
+# Pivot: AI-driven firefighting drones, thermal + YOLO human detection
 
-A multi-page TanStack Start site with a clean technical "blueprint" aesthetic that walks visitors from traditional firefighting into modern drone-based firefighting, with technical detail, real projects, and societal impact.
+Re-skin the site from "blueprint field manual" to a dark, cinematic SaaS-style product page (like the reference upload) and refocus the content from generic firefighting drone history to **AI vision systems that find people in smoke and debris**.
 
-## Visual direction
+## Visual direction (matches reference)
 
-- Palette: paper `#f5f5f0`, deep navy `#0f1f3a`, signal red `#d72638`, blueprint blue `#3a86ff`.
-- Typography: a technical mono (JetBrains Mono) for labels/specs + a clean grotesque (Space Grotesk) for headings and body.
-- Treatment: blueprint grid backgrounds, callout lines, coordinate labels, diagram-style annotations on images, thin rules, monospaced figure captions.
-- Motion: restrained — scroll-revealed diagrams, animated SVG lines tracing drone paths, hover states on project cards. Implemented with Motion (framer-motion).
+- Deep near-black background (`#0a0a0b`), large rounded outer panel, soft radial light blooms (cool white / faint ember), star/particle dust.
+- Floating top nav pill (Home, Detection, Thermal AI, Missions, Projects, FAQ) + a "Live Feed" status pill with a pulsing red dot.
+- Big light/dim two-tone hero headline (e.g. *"One model. Every life found."*), sub-lede, two pill buttons ("Open Console", "See How It Works"), small "Unlock thermal vision" badge above.
+- Corner "node" callouts (Cortex / Quant / Aelf / Meeton in the ref) replaced with live AI telemetry tags: `YOLOv8-Thermal · 47 FPS`, `Humans detected · 3`, `Confidence · 0.92`, `Smoke opacity · 87%`.
+- Bottom-left "02/03 . Scroll down" indicator, bottom-right slide pagination, bottom logo strip becomes "Trusted detection stack" (PyTorch, ONNX, NVIDIA Jetson, FLIR, ROS 2, OpenCV).
+- Typography: Space Grotesk display + JetBrains Mono micro-labels (kept), but on dark; ember-orange accent (`#ff6a3d`) and ice-blue accent (`#7cc4ff`) for thermal palette.
 
-## Routes
+## Information architecture (slim, AI-first)
 
-```
-src/routes/
-  __root.tsx              shared shell: top nav, blueprint background, footer
-  index.tsx               /              Landing: hero + thesis + nav into chapters
-  traditional.tsx         /traditional   Traditional firefighting context
-  drones.tsx              /drones        Shift to drone firefighting + why now
-  how-it-works.tsx        /how-it-works  Technical breakdown (interactive diagram)
-  projects.tsx            /projects      Real-world projects gallery
-  impact.tsx              /impact        Societal impact + stats
-```
+Reduce from 6 pages to 5, all reframed:
 
-Each route gets its own `head()` with route-specific title, description, og:title, og:description. `og:image` only at leaf pages with a hero image.
+1. `/` — **Hero + product-style overview** (reference layout). Sections under hero: "Why AI on the drone", AI capability triad (Detect / Communicate / Stream), thermal sample strip, CTA.
+2. `/detection` — **YOLO human detection deep-dive**. How YOLOv8 / thermal-tuned variants work, training on FLIR ADAS + thermal-person datasets, why thermal+CNN beats RGB in smoke, bounding-box + confidence demo (animated SVG over a thermal still), edge inference on Jetson Orin, latency budget.
+3. `/thermal` — **Thermal imaging & smoke physics**. LWIR 7.5–13.5 μm, why smoke is transparent to IR, false-color palettes (White-Hot / Iron / Rainbow toggle on a sample frame), sensor specs, fusion with RGB and LiDAR for debris scenes.
+4. `/missions` — **Scenarios**: (a) Wildfire — locate trapped hikers in smoke column; (b) Structure fire — find occupants behind walls of smoke; (c) Building collapse / debris — heat-signature triage. Each scenario as an interactive card with a step-through: *Ingest → Detect → Classify → Geo-tag → Relay to IC*.
+5. `/command` — **Incident Commander relay**: how detections become alerts. Mock IC dashboard panel (video tile + detection list + map pin + audio-callout transcript "Two humans, 40m NE, low motion"), comms stack (mesh radio + LTE failover + MQTT/ROS 2 topics), human-in-the-loop confirmation.
 
-## Page contents
+Cut the old `/traditional`, `/drones`, `/how-it-works`, `/projects`, `/impact` routes. Real-world projects fold into a compact "Used in the field" strip on `/missions` (Skydio X10, Parrot Anafi USA Thermal, DJI M30T + custom YOLO, Rain autonomous stations) — no separate Projects page.
 
-### / (Landing)
-- Full-bleed hero with blueprint grid, large display headline ("Firefighting, redrawn from above"), short standfirst, coordinate-style metadata.
-- Hero image: drone silhouette over wildfire smoke (generated).
-- Chapter index — six numbered cards (01 Traditional → 06 Impact) linking to each route.
-- Footer strip with a quick stat ribbon.
+## Key new/changed components
 
-### /traditional
-- Brief history + how ground/aerial firefighting works today (engines, hotshot crews, air tankers, helicopters).
-- 2-column editorial layout with a generated image of a wildland crew and an annotated diagram of a traditional response.
-- "Limitations" callouts (visibility, crew risk, night ops, scale) — these set up the transition.
+- `HeroFuturistic.tsx` — reference-style hero (panel, blooms, corner telemetry nodes, dual-tone headline, pill CTAs, scroll indicator, slide pager).
+- `TopNavPill.tsx` — floating glass nav with status pill.
+- `LogoStrip.tsx` — "Trusted detection stack" row.
+- `YoloDetectionDemo.tsx` — thermal frame with animated bounding boxes, labels (`person 0.94`), scanning line, FPS counter. Pure SVG/CSS over a generated thermal still.
+- `ThermalPaletteToggle.tsx` — switch between White-Hot / Black-Hot / Iron / Rainbow CSS filter presets on a thermal sample.
+- `ScenarioStepper.tsx` — replaces MissionStepper, with the 5-stage AI pipeline.
+- `CommanderConsole.tsx` — fake IC dashboard (video tile, detection list with confidences, mini-map with pulsing pin, alert log).
+- `TelemetryTag.tsx` — small corner callouts used in hero.
+- Keep `StatCounter`, replace its numbers with AI-relevant stats (detection latency, recall in smoke, lives-found case studies).
+- `SiteHeader` / `SiteFooter` / `BlueprintBackground` rewritten dark; blueprint grid swapped for subtle dotted starfield + radial blooms.
 
-### /drones
-- Transition page: "Why drones, why now." Key drivers (sensor cost, autonomy, swarm coordination, regulatory shifts).
-- Side-by-side comparison table: traditional vs drone-assisted across detection time, risk to crews, night ops, payload, coverage.
-- Generated image: drone over a controlled burn at dusk.
+## Design tokens (`src/styles.css`)
 
-### /how-it-works (the interactive centerpiece)
-- Interactive labeled diagram of a firefighting drone (SVG with hover hotspots: thermal/IR camera, LiDAR, GPS/RTK, comms, payload bay, propulsion). Hovering a hotspot reveals a spec panel.
-- Mission phases stepper (Detect → Map → Suppress → Monitor) — clicking a step animates the diagram state and swaps the explanation panel.
-- Technical context section covering: IR/thermal imaging, real-time wildfire mapping, swarm coordination, tethered drones for endurance, payload types (water, retardant, pyrotechnic ignition spheres for prescribed burns), comms/mesh networking, autonomy stack.
-- Generated images: thermal-style false-color frame, swarm pattern diagram.
+- `--background: oklch(0.13 0.01 260)` (near-black with cool tint)
+- `--foreground: oklch(0.96 0 0)`
+- `--muted-foreground: oklch(0.65 0.01 260)`
+- `--primary: oklch(0.72 0.18 45)` (ember orange `#ff6a3d`)
+- `--accent: oklch(0.78 0.12 230)` (ice blue, thermal)
+- `--signal: oklch(0.7 0.22 25)` (alert red for live dot)
+- `--rule: oklch(1 0 0 / 0.08)`
+- New: `--gradient-bloom`, `--shadow-glow-ember`, `--shadow-glow-ice`, `--bg-starfield` (radial-gradient dust).
+- Drop blueprint grid utilities; add `.glass-panel`, `.bloom`, `.telemetry-tag`.
 
-### /projects
-- Card grid of real projects/companies (3 cols desktop, 1 mobile). Each card: generated hero image, name, country, one-paragraph description, role in firefighting.
-- Featured: DJI wildfire response programs, Lockheed Martin Indago/Stalker, Parrot Anafi USA, Draganfly heavy-lift, Aerones firefighting drone, Drone Amplified IGNIS (ignition spheres for prescribed burns), Rain (autonomous wildfire response), Skydio public-safety deployments.
-- Each card links to a modal/detail panel with more specs.
+## Images (regenerate)
 
-### /impact
-- Societal impact: firefighter safety, faster detection, reduced burn area, cost, environmental tradeoffs, privacy/regulatory concerns.
-- Animated counters for key stats (illustrative, sourced from public reporting).
-- Closing CTA: "Read further" with external links to reputable sources (USFS, NIFC, manufacturer pages).
+Replace existing JPGs with dark, cinematic, AI-themed art (premium tier for the hero only):
+- `hero-thermal.jpg` — drone POV thermal frame, smoke column, two human heat signatures highlighted.
+- `thermal-smoke.jpg` — dense smoke with faint human silhouettes in LWIR false-color.
+- `thermal-debris.jpg` — collapsed building, heat blooms under rubble.
+- `detection-frame.jpg` — base plate for the YoloDetectionDemo (thermal scene, no boxes — boxes drawn in SVG).
+- `commander-bg.jpg` — moody command-post environment for the IC section.
+- `drone-night.jpg` — drone hovering over fire at night, cinematic.
 
-## Shared components
-
-- `src/components/SiteHeader.tsx` — top nav with all 6 routes, active state.
-- `src/components/SiteFooter.tsx` — minimal footer with credits/sources.
-- `src/components/BlueprintBackground.tsx` — reusable grid SVG.
-- `src/components/ChapterCard.tsx` — numbered chapter tile used on the landing page.
-- `src/components/DroneDiagram.tsx` — interactive SVG diagram for /how-it-works.
-- `src/components/MissionStepper.tsx` — phase stepper for /how-it-works.
-- `src/components/ProjectCard.tsx` — project tile with modal.
-- `src/components/ComparisonTable.tsx` — traditional vs drone table.
-- `src/components/StatCounter.tsx` — animated counter for /impact.
-
-## Design tokens
-
-Update `src/styles.css`:
-- Set `--background` to paper `#f5f5f0`, `--foreground` to navy `#0f1f3a`.
-- Add `--primary` navy, `--accent` blueprint blue `#3a86ff`, `--destructive` signal red `#d72638`.
-- Add custom tokens: `--grid-line`, `--rule`, `--mono-foreground`.
-- Wire Space Grotesk + JetBrains Mono via `<link>` in `__root.tsx` head.
-
-## Images
-
-Generate ~8 images with `imagegen` saved under `src/assets/`:
-- hero-drone.jpg (landing hero)
-- traditional-crew.jpg (/traditional)
-- drone-dusk.jpg (/drones)
-- thermal-frame.jpg (/how-it-works)
-- swarm-diagram.jpg (/how-it-works)
-- 3–4 project hero images (generic drone-over-fire compositions; real company logos not generated).
-
-Project logos are not used to avoid trademark issues; cards use generated illustrative imagery + text.
-
-## Dependencies
-
-- `motion` (framer-motion) for scroll/hover animations — install via `bun add motion`.
+Old `traditional-crew.jpg`, `project-*.jpg`, `swarm.jpg` deleted.
 
 ## Technical notes
 
-- All routes are pure presentation — no server functions, no auth, no database needed.
-- Each route file: `createFileRoute("/path")({ head: () => ({...}), component: PageName })`.
-- Use TanStack `<Link>` for nav (never `<a href>` for internal routes).
-- Keep `<Outlet />` in `__root.tsx`.
-- Accessibility: alt text on every image, keyboard-focusable hotspots on the interactive diagram, sufficient contrast on red/navy.
+- Pure presentation; no backend, no auth, no DB.
+- All animation via existing `motion` package (Framer Motion). YOLO demo uses `AnimatePresence` + `motion.rect` to "scan and lock" bounding boxes; not a real model.
+- `__root.tsx` updated to dark theme + new starfield background.
+- `routeTree.gen.ts` regenerated automatically by Vite plugin when route files are added/removed.
+- Each route still uses `createFileRoute` with `head()` for unique title/description/og.
+- Accessibility: maintain focus rings on dark bg, ensure contrast on muted text, reduce-motion variants for the scanning line.
 
 ## Out of scope
 
-- No backend, no user accounts, no CMS.
-- No real-time data, no maps integration.
-- No game-like 3D scene; the diagram is SVG-based, not Three.js.
+- No real ML inference, no live video, no real map, no backend, no telemetry feed — all visuals are crafted mocks.
+- No 3D / WebGL.
+- No payments, auth, or storage.
+

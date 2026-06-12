@@ -9,36 +9,30 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TraditionalRouteImport } from './routes/traditional'
-import { Route as ProjectsRouteImport } from './routes/projects'
-import { Route as ImpactRouteImport } from './routes/impact'
-import { Route as HowItWorksRouteImport } from './routes/how-it-works'
-import { Route as DronesRouteImport } from './routes/drones'
+import { Route as ThermalRouteImport } from './routes/thermal'
+import { Route as MissionsRouteImport } from './routes/missions'
+import { Route as DetectionRouteImport } from './routes/detection'
+import { Route as CommandRouteImport } from './routes/command'
 import { Route as IndexRouteImport } from './routes/index'
 
-const TraditionalRoute = TraditionalRouteImport.update({
-  id: '/traditional',
-  path: '/traditional',
+const ThermalRoute = ThermalRouteImport.update({
+  id: '/thermal',
+  path: '/thermal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProjectsRoute = ProjectsRouteImport.update({
-  id: '/projects',
-  path: '/projects',
+const MissionsRoute = MissionsRouteImport.update({
+  id: '/missions',
+  path: '/missions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImpactRoute = ImpactRouteImport.update({
-  id: '/impact',
-  path: '/impact',
+const DetectionRoute = DetectionRouteImport.update({
+  id: '/detection',
+  path: '/detection',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HowItWorksRoute = HowItWorksRouteImport.update({
-  id: '/how-it-works',
-  path: '/how-it-works',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DronesRoute = DronesRouteImport.update({
-  id: '/drones',
-  path: '/drones',
+const CommandRoute = CommandRouteImport.update({
+  id: '/command',
+  path: '/command',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,100 +43,70 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/drones': typeof DronesRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/impact': typeof ImpactRoute
-  '/projects': typeof ProjectsRoute
-  '/traditional': typeof TraditionalRoute
+  '/command': typeof CommandRoute
+  '/detection': typeof DetectionRoute
+  '/missions': typeof MissionsRoute
+  '/thermal': typeof ThermalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/drones': typeof DronesRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/impact': typeof ImpactRoute
-  '/projects': typeof ProjectsRoute
-  '/traditional': typeof TraditionalRoute
+  '/command': typeof CommandRoute
+  '/detection': typeof DetectionRoute
+  '/missions': typeof MissionsRoute
+  '/thermal': typeof ThermalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/drones': typeof DronesRoute
-  '/how-it-works': typeof HowItWorksRoute
-  '/impact': typeof ImpactRoute
-  '/projects': typeof ProjectsRoute
-  '/traditional': typeof TraditionalRoute
+  '/command': typeof CommandRoute
+  '/detection': typeof DetectionRoute
+  '/missions': typeof MissionsRoute
+  '/thermal': typeof ThermalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/drones'
-    | '/how-it-works'
-    | '/impact'
-    | '/projects'
-    | '/traditional'
+  fullPaths: '/' | '/command' | '/detection' | '/missions' | '/thermal'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/drones'
-    | '/how-it-works'
-    | '/impact'
-    | '/projects'
-    | '/traditional'
-  id:
-    | '__root__'
-    | '/'
-    | '/drones'
-    | '/how-it-works'
-    | '/impact'
-    | '/projects'
-    | '/traditional'
+  to: '/' | '/command' | '/detection' | '/missions' | '/thermal'
+  id: '__root__' | '/' | '/command' | '/detection' | '/missions' | '/thermal'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DronesRoute: typeof DronesRoute
-  HowItWorksRoute: typeof HowItWorksRoute
-  ImpactRoute: typeof ImpactRoute
-  ProjectsRoute: typeof ProjectsRoute
-  TraditionalRoute: typeof TraditionalRoute
+  CommandRoute: typeof CommandRoute
+  DetectionRoute: typeof DetectionRoute
+  MissionsRoute: typeof MissionsRoute
+  ThermalRoute: typeof ThermalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/traditional': {
-      id: '/traditional'
-      path: '/traditional'
-      fullPath: '/traditional'
-      preLoaderRoute: typeof TraditionalRouteImport
+    '/thermal': {
+      id: '/thermal'
+      path: '/thermal'
+      fullPath: '/thermal'
+      preLoaderRoute: typeof ThermalRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/projects': {
-      id: '/projects'
-      path: '/projects'
-      fullPath: '/projects'
-      preLoaderRoute: typeof ProjectsRouteImport
+    '/missions': {
+      id: '/missions'
+      path: '/missions'
+      fullPath: '/missions'
+      preLoaderRoute: typeof MissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/impact': {
-      id: '/impact'
-      path: '/impact'
-      fullPath: '/impact'
-      preLoaderRoute: typeof ImpactRouteImport
+    '/detection': {
+      id: '/detection'
+      path: '/detection'
+      fullPath: '/detection'
+      preLoaderRoute: typeof DetectionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/how-it-works': {
-      id: '/how-it-works'
-      path: '/how-it-works'
-      fullPath: '/how-it-works'
-      preLoaderRoute: typeof HowItWorksRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/drones': {
-      id: '/drones'
-      path: '/drones'
-      fullPath: '/drones'
-      preLoaderRoute: typeof DronesRouteImport
+    '/command': {
+      id: '/command'
+      path: '/command'
+      fullPath: '/command'
+      preLoaderRoute: typeof CommandRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -157,22 +121,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DronesRoute: DronesRoute,
-  HowItWorksRoute: HowItWorksRoute,
-  ImpactRoute: ImpactRoute,
-  ProjectsRoute: ProjectsRoute,
-  TraditionalRoute: TraditionalRoute,
+  CommandRoute: CommandRoute,
+  DetectionRoute: DetectionRoute,
+  MissionsRoute: MissionsRoute,
+  ThermalRoute: ThermalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
