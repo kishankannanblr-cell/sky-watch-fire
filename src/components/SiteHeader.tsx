@@ -1,21 +1,20 @@
 import { Link } from "@tanstack/react-router";
 
 const nav: { to: string; label: string; exact?: boolean }[] = [
-  { to: "/", label: "00 / Index", exact: true },
-  { to: "/traditional", label: "01 / Traditional" },
-  { to: "/drones", label: "02 / Drones" },
-  { to: "/how-it-works", label: "03 / How it works" },
-  { to: "/projects", label: "04 / Projects" },
-  { to: "/impact", label: "05 / Impact" },
+  { to: "/", label: "Home", exact: true },
+  { to: "/detection", label: "Detection" },
+  { to: "/thermal", label: "Thermal AI" },
+  { to: "/missions", label: "Missions" },
+  { to: "/command", label: "Command" },
 ];
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-rule bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-6 py-3">
-        <Link to="/" className="flex items-center gap-2 font-mono text-xs tracking-wider">
-          <span className="inline-block h-2 w-2 bg-signal" />
-          <span className="uppercase">Aero/Fire — Field Manual</span>
+    <header className="sticky top-4 z-40 mx-auto w-full max-w-[1400px] px-6">
+      <div className="glass-panel flex items-center justify-between gap-4 rounded-full px-3 py-2">
+        <Link to="/" className="flex items-center gap-2 pl-2 font-mono text-[11px] uppercase tracking-widest">
+          <span className="grid h-7 w-7 place-items-center rounded-full bg-ember/20 text-ember">◉</span>
+          <span className="hidden sm:inline">PYRA / Vision</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((n) => (
@@ -23,28 +22,33 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               activeOptions={{ exact: n.exact }}
-              activeProps={{ className: "text-signal" }}
+              activeProps={{ className: "bg-white/8 text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
-              className="rounded-sm px-2 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors"
+              className="rounded-full px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors"
             >
               {n.label}
             </Link>
           ))}
         </nav>
-        <div className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground lg:block">
-          Rev. 2026.06 / Sheet A
+        <div className="flex items-center gap-2">
+          <span className="pulse-dot hidden items-center rounded-full border border-white/10 bg-black/30 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline-flex">
+            Live Feed
+          </span>
+          <span className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-black/30 text-ember">
+            ⚠
+          </span>
         </div>
       </div>
-      <div className="overflow-x-auto border-t border-rule md:hidden">
-        <div className="flex gap-1 px-4 py-2">
+      <div className="mt-2 overflow-x-auto md:hidden">
+        <div className="glass-panel flex gap-1 rounded-full px-3 py-2">
           {nav.map((n) => (
             <Link
               key={n.to}
               to={n.to}
               activeOptions={{ exact: n.exact }}
-              activeProps={{ className: "text-signal" }}
+              activeProps={{ className: "text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground" }}
-              className="whitespace-nowrap font-mono text-[11px] uppercase tracking-wider"
+              className="whitespace-nowrap px-3 py-1 font-mono text-[11px] uppercase tracking-wider"
             >
               {n.label}
             </Link>
