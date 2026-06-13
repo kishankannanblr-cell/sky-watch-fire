@@ -18,7 +18,8 @@ export function YoloDetectionDemo() {
     let i = 0;
     const t = setInterval(() => {
       if (i < BOXES.length) {
-        setShown((s) => [...s, BOXES[i].id]);
+        const id = BOXES[i].id;
+        setShown((s) => (s.includes(id) ? s : [...s, id]));
         i++;
       } else {
         clearInterval(t);
