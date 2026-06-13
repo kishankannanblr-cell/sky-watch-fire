@@ -83,6 +83,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "PYRA Vision" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "PYRA / Vision — AI firefighting drones" },
+      { name: "twitter:title", content: "PYRA / Vision — AI firefighting drones" },
+      { name: "description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },
+      { property: "og:description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },
+      { name: "twitter:description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9fd1e247-f484-4d08-9f14-0beea227ea7d/id-preview-4ab20ff8--5d37c530-0de3-4ef0-9ac5-0bc3564cc256.lovable.app-1781344042480.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9fd1e247-f484-4d08-9f14-0beea227ea7d/id-preview-4ab20ff8--5d37c530-0de3-4ef0-9ac5-0bc3564cc256.lovable.app-1781344042480.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
