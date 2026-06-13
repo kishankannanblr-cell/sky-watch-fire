@@ -17,9 +17,9 @@ type Box = {
 };
 
 const BOXES: Box[] = [
-  { id: "p1", x: 21, y: 58, w: 11, h: 18, conf: 0.94, label: "person", trackId: "trk_0427", tempC: 34.8, posture: "prone", rangeM: 18 },
-  { id: "p2", x: 45, y: 63, w: 10, h: 16, conf: 0.88, label: "person", trackId: "trk_0431", tempC: 33.1, posture: "crawling", rangeM: 22 },
-  { id: "p3", x: 70, y: 55, w: 11, h: 20, conf: 0.91, label: "person", trackId: "trk_0435", tempC: 35.6, posture: "prone", rangeM: 16 },
+  { id: "p1", x: 19, y: 42, w: 14, h: 22, conf: 0.94, label: "person", trackId: "trk_0427", tempC: 34.8, posture: "prone", rangeM: 18 },
+  { id: "p2", x: 44, y: 48, w: 13, h: 22, conf: 0.88, label: "person", trackId: "trk_0431", tempC: 33.1, posture: "crawling", rangeM: 22 },
+  { id: "p3", x: 69, y: 44, w: 14, h: 22, conf: 0.91, label: "person", trackId: "trk_0435", tempC: 35.6, posture: "prone", rangeM: 16 },
 ];
 
 export function YoloDetectionDemo() {
