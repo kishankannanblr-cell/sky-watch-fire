@@ -1,82 +1,66 @@
-## Goal
-Make the `/detection` YOLO HUD read like a real thermal feed: the people the boxes claim to detect should actually be partially visible as heat signatures in the frame, and the overlay should surface per-target temperature and a scene/surroundings analysis panel.
 
-## Scope
-Only `/detection` and its supporting asset/component. Nothing else changes.
+## Goal
+Stop *describing* the product's most interesting capabilities and start *demonstrating* them. Three targeted interactive upgrades — `/detection` HUD, `/command` sector map, `/command` IC console — with no copy or routing changes elsewhere.
 
 ---
 
-## 1. New thermal frame with visible human signatures
+## 1. `/detection` — make the YOLO HUD feel live
 
-Replace `src/assets/detection-frame.jpg` with a regenerated thermal aerial frame (`imagegen--edit_image` on the existing file, 4:3) where:
-- Three human-shaped warm blobs are partially visible through smoke at the positions the current bounding boxes target (~22%/58%, ~46%/64%, ~71%/55%).
-- Each figure is only partially resolved: head + shoulders or torso bleeding into smoke — clearly heat signatures, not photographic people.
-- White-hot palette, dense black smoke around them, debris silhouettes (collapsed beams, rubble) as cooler dark shapes for context.
-- Keep the existing aerial / top-down framing so the current box coordinates still land on the figures.
+File: `src/components/YoloDetectionDemo.tsx` (already has FPS jitter, per-target metadata, scene panel).
 
-If the regenerated positions drift, nudge the `BOXES` array in `YoloDetectionDemo.tsx` (x/y/w/h only) to re-center on the new signatures.
+What's missing is *motion*. Add:
 
-## 2. Per-target temperature + track metadata
+- **Sweeping scan line.** A horizontal 1px ember/cyan gradient bar that travels top→bottom over the thermal frame on a ~2.4s loop (CSS `@keyframes` or `motion.div animate={{ y: ['0%','100%'] }}` with `repeat: Infinity`). Soft glow + 30% opacity so it reads as a sensor sweep, not a progress bar.
+- **Staggered box appearance.** Boxes currently render all at once. On mount and on every "re-acquire" tick (every ~6s), boxes fade/scale in one by one (150ms stagger) as the scan line passes their y-coordinate. Confidence number counts up from 0.00 → target value over 400ms when a box appears.
+- **Live "Humans detected" counter** in the top-left HUD chrome that increments as each box materializes (0 → 1 → 2 → 3), then holds. Resets on the re-acquire cycle so the viewer sees the count climb.
+- **Acquisition pulse** on each new box: a brief ember ring that scales from box size to 1.4× and fades, drawing the eye to detection events.
 
-In `YoloDetectionDemo.tsx`, extend the `Box` type and the three entries:
+No new components; all changes inside `YoloDetectionDemo.tsx`. The existing scene-analysis panel, per-target labels, and FPS ticker stay.
 
-```ts
-type Box = {
-  id; x; y; w; h; conf; label;
-  trackId: string;     // e.g. "trk_0427"
-  tempC: number;       // surface temp at signature centroid, e.g. 34.8
-  posture: string;     // "prone" | "crawling" | "standing"
-  rangeM: number;      // slant range from drone, e.g. 18
-};
-```
+---
 
-Update the label chip from `person · 0.94` to a two-line tag:
-```
-person · 0.94 · trk_0427
-34.8°C · prone · 18 m
-```
+## 2. `/command` — real sector map canvas
 
-Confidence drifts ±0.02 per tick (smoothed, not random noise) so it reads like a live tracker rather than a static value. Temperature drifts ±0.3°C.
+File: `src/components/CommanderConsole.tsx`, replacing the current `▲`-on-dot-grid block (bottom of the right column).
 
-## 3. Scene / surroundings analysis panel
+Build a proper SVG sector map (~h-64, full width of the right column):
 
-Add a new HUD element — a compact glass panel pinned to the bottom-left of the frame (replacing the current "Humans detected · N" pill, which moves into it):
+- **Background**: existing dot-grid + a subtle topographic contour (3–4 concentric irregular SVG paths in `oklch(... / 0.06)`) so it reads as terrain, not a placeholder.
+- **Fire perimeter**: a closed, organic SVG `<path>` filled with `ember/15` and stroked with `ember/60` dashed. Add a slow "breathing" animation (scale 1 → 1.02 → 1) on a 4s loop to suggest active spread.
+- **Drone**: a small rotated triangle glyph (SVG, not text) at center with a thin heading line and a faint 60° FOV cone in `ice/20`. Drifts ±4px on a 6s loop so it doesn't feel frozen.
+- **Survivor pins**: the three detections (H-018/019/020) plotted at bearings/distances consistent with their list entries (041°/38m, 065°/52m, 118°/71m — convert to x/y from the drone origin). Each pin is an ember dot with an `animate-ping` halo. Hovering a list row highlights its corresponding pin (shared `selectedId` state).
+- **Compass rose + scale bar** in two corners (`N` glyph, `0 — 50 m` tick) in mono uppercase muted.
+- **Legend** strip at the bottom: `▲ UAS-04   ◉ Survivor   ░ Fire perimeter`.
 
-```
-SCENE ANALYSIS
-─────────────────────────
-Humans detected     3
-Ambient (LWIR avg)  62°C
-Hot spots (>400°C)  2  ← active fire
-Structural debris   detected (NW quadrant)
-Smoke opacity       87%  · visibility ≪ 2 m (RGB)
-Egress path         blocked — S corridor
-```
+Pure SVG, no map library. All coordinates derived from the existing `SEED` array so the map and list stay in sync.
 
-Values tick on the same 900 ms interval as FPS so it feels live. Hot-spot count and ambient drift slightly. "Egress path" and "Structural debris" stay static (they're per-scene classifier outputs, not per-frame).
+---
 
-Top-right chrome stays (`FLIR Boson 640×512 · LWIR`) and a new line is added under it: `Palette: White-Hot · AGC on`.
+## 3. `/command` — human-in-the-loop interactive console
 
-## 4. Box visuals tweak
+Same file: `src/components/CommanderConsole.tsx`. Turn the static detection list into a live queue.
 
-So the boxes don't completely cover the (now visible) people:
-- Drop box stroke opacity to ~70% and stroke width to `0.2`.
-- Add a thin crosshair at each box centroid marking the temperature-sample point.
-- Keep the corner ticks.
+- **Streamed arrivals**: detections appear one-by-one on a timer (`H-018` at t=0, `H-019` at t≈2.5s, `H-020` at t≈5s). Each row enters with the existing motion fade/slide and a one-shot ember pulse on its status dot.
+- **Per-row status state**: `pending | confirmed | dismissed`. New rows arrive as `pending` with a soft ember ring + blinking dot.
+- **Confirm / Dismiss buttons** on each `pending` row:
+  - `Confirm` → status → `confirmed`, dot turns `signal` (green-cyan), buttons replaced by `✓ Confirmed · HH:MM:SS` timestamp, and the matching map pin switches from ember to `signal` with a steady ring (no more ping).
+  - `Dismiss` → status → `dismissed`, row dims to 40% opacity, label gets strikethrough, map pin fades out.
+- **IC callout banner** (the existing rotating banner over the live tile) is now *driven* by queue events: a new arrival pushes "New heat signature H-0XX, sector C, conf 0.91 — awaiting confirmation"; a confirm pushes "H-0XX confirmed by IC. Relayed to ground crews."; a dismiss pushes "H-0XX dismissed — flagged for retraining." This makes the AI-suggests / human-decides loop legible in five seconds.
+- **Queue footer**: small mono line `3 detected · 2 confirmed · 1 dismissed · 0 pending` that updates live — the receipt of the human-in-the-loop story.
+- After all three are resolved, a 4s pause then the queue resets and replays, so the interaction is always visible to a scrolling visitor.
+
+State lives in `CommanderConsole.tsx` (single `useReducer` or a couple of `useState`s). No new files, no route changes, no copy changes elsewhere on the page.
 
 ---
 
 ## Files touched
-- `src/assets/detection-frame.jpg` — regenerated via `imagegen--edit_image`.
-- `src/components/YoloDetectionDemo.tsx` — extended box metadata, new scene panel, updated labels, softer box stroke.
+- `src/components/YoloDetectionDemo.tsx` — scan line, staggered box reveal, live counter, acquisition pulse.
+- `src/components/CommanderConsole.tsx` — SVG sector map; streamed detections with Confirm/Dismiss; map ↔ list sync; queue-driven IC callout; queue footer.
 
-No other components, routes, copy, or styling change. `CommanderConsole` is untouched (you can ask for the same treatment there separately).
-
----
+Nothing else changes. No route additions, no copy edits, no design-token changes.
 
 ## Verification
-1. Load `/detection`, scroll to the HUD.
-2. Confirm three partially visible heat signatures sit inside the three bounding boxes.
-3. Confirm each box label shows track ID + temperature + posture + range.
-4. Confirm the SCENE ANALYSIS panel renders bottom-left with the listed fields, and that FPS / confidence / temperature values tick without errors.
-5. Console clean, no error fallback.
+1. `/detection`: scan line sweeps continuously; on load (and every ~6s) the 3 boxes appear staggered with confidence counting up; "Humans detected" pill climbs 0 → 3.
+2. `/command`: sector map renders as SVG with fire perimeter, drone glyph + FOV cone, 3 survivor pins at bearings matching the list, compass + scale bar.
+3. `/command`: detections stream in one at a time; each shows Confirm/Dismiss; clicking either updates row, map pin, callout banner, and footer counters; queue replays after all three resolved.
+4. Console clean, no error fallback, FPS stays smooth.

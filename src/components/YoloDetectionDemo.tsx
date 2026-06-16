@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import detectionFrame from "../assets/detection-frame.jpg";
 
@@ -24,41 +24,71 @@ const BOXES: Box[] = [
 
 export function YoloDetectionDemo() {
   const [shown, setShown] = useState<string[]>([]);
+  const [pulsed, setPulsed] = useState<string[]>([]);
   const [fps, setFps] = useState(46);
   const [confs, setConfs] = useState<Record<string, number>>(
-    Object.fromEntries(BOXES.map((b) => [b.id, b.conf])),
+    Object.fromEntries(BOXES.map((b) => [b.id, 0])),
   );
   const [temps, setTemps] = useState<Record<string, number>>(
     Object.fromEntries(BOXES.map((b) => [b.id, b.tempC])),
   );
   const [ambient, setAmbient] = useState(62);
   const [hotSpots, setHotSpots] = useState(2);
+  const lockedRef = useRef<Record<string, boolean>>({});
 
+  // Acquisition cycle: stagger boxes in, hold ~5s, reset, repeat.
   useEffect(() => {
-    let i = 0;
-    const t = setInterval(() => {
-      if (i < BOXES.length) {
-        const id = BOXES[i].id;
-        setShown((s) => (s.includes(id) ? s : [...s, id]));
-        i++;
-      } else {
-        clearInterval(t);
-      }
-    }, 700);
-    return () => clearInterval(t);
+    let timers: ReturnType<typeof setTimeout>[] = [];
+    const runCycle = () => {
+      setShown([]);
+      setPulsed([]);
+      setConfs(Object.fromEntries(BOXES.map((b) => [b.id, 0])));
+      lockedRef.current = {};
+      BOXES.forEach((b, i) => {
+        const delay = 600 + i * 850;
+        timers.push(
+          setTimeout(() => {
+            setShown((s) => (s.includes(b.id) ? s : [...s, b.id]));
+            setPulsed((p) => [...p, b.id]);
+            // count-up confidence over ~450ms
+            const steps = 14;
+            const target = b.conf;
+            for (let k = 1; k <= steps; k++) {
+              timers.push(
+                setTimeout(() => {
+                  setConfs((c) => ({ ...c, [b.id]: (target * k) / steps }));
+                  if (k === steps) lockedRef.current[b.id] = true;
+                }, (k * 450) / steps),
+              );
+            }
+            // drop pulse after 900ms
+            timers.push(
+              setTimeout(() => {
+                setPulsed((p) => p.filter((x) => x !== b.id));
+              }, 900),
+            );
+          }, delay),
+        );
+      });
+    };
+    runCycle();
+    const loop = setInterval(runCycle, 7000);
+    return () => {
+      clearInterval(loop);
+      timers.forEach(clearTimeout);
+    };
   }, []);
 
+  // FPS + jitter loop
   useEffect(() => {
     const t = setInterval(() => {
-      // Smoothed FPS drift around 47
       setFps((f) => Math.round((f * 0.6 + (45 + Math.random() * 4) * 0.4) * 10) / 10);
-      // Confidence + temp jitter per target
       setConfs((c) => {
-        const next: Record<string, number> = {};
+        const next = { ...c };
         for (const b of BOXES) {
-          const cur = c[b.id] ?? b.conf;
+          if (!lockedRef.current[b.id]) continue;
           const drift = (Math.random() - 0.5) * 0.02;
-          next[b.id] = Math.max(0.78, Math.min(0.98, cur + drift));
+          next[b.id] = Math.max(0.78, Math.min(0.98, (c[b.id] ?? b.conf) + drift));
         }
         return next;
       });
@@ -97,14 +127,33 @@ export function YoloDetectionDemo() {
             {BOXES.filter((b) => shown.includes(b.id)).map((b) => {
               const cx = b.x + b.w / 2;
               const cy = b.y + b.h / 2;
+              const isPulsing = pulsed.includes(b.id);
               return (
                 <motion.g
                   key={b.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.92 }}
                   animate={{ opacity: 0.85, scale: 1 }}
+                  exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
                   className="text-ember"
+                  style={{ transformOrigin: `${cx}% ${cy}%`, transformBox: "fill-box" } as React.CSSProperties}
                 >
+                  {/* acquisition pulse ring */}
+                  {isPulsing && (
+                    <motion.rect
+                      x={b.x}
+                      y={b.y}
+                      width={b.w}
+                      height={b.h}
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="0.3"
+                      initial={{ opacity: 0.9, scale: 1 }}
+                      animate={{ opacity: 0, scale: 1.4 }}
+                      transition={{ duration: 0.9, ease: "easeOut" }}
+                      style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: "fill-box" } as React.CSSProperties}
+                    />
+                  )}
                   <rect
                     x={b.x}
                     y={b.y}
@@ -114,7 +163,6 @@ export function YoloDetectionDemo() {
                     stroke="currentColor"
                     strokeWidth="0.2"
                   />
-                  {/* corner ticks */}
                   {[
                     [b.x, b.y],
                     [b.x + b.w, b.y],
@@ -123,7 +171,6 @@ export function YoloDetectionDemo() {
                   ].map(([tx, ty], idx) => (
                     <circle key={idx} cx={tx} cy={ty} r="0.5" className="fill-ember" />
                   ))}
-                  {/* centroid crosshair — temperature sample point */}
                   <line x1={cx - 1.2} y1={cy} x2={cx + 1.2} y2={cy} stroke="currentColor" strokeWidth="0.15" />
                   <line x1={cx} y1={cy - 1.2} x2={cx} y2={cy + 1.2} stroke="currentColor" strokeWidth="0.15" />
                 </motion.g>
@@ -132,7 +179,7 @@ export function YoloDetectionDemo() {
           </AnimatePresence>
         </svg>
 
-        {/* labels positioned over image */}
+        {/* labels */}
         {BOXES.filter((b) => shown.includes(b.id)).map((b) => (
           <motion.div
             key={b.id}
@@ -143,7 +190,7 @@ export function YoloDetectionDemo() {
           >
             <div className="mb-1 inline-block rounded-sm bg-ember px-2 py-1 font-mono text-[9px] uppercase leading-tight tracking-widest text-black">
               <div>
-                {b.label} · {(confs[b.id] ?? b.conf).toFixed(2)} · {b.trackId}
+                {b.label} · {(confs[b.id] ?? 0).toFixed(2)} · {b.trackId}
               </div>
               <div className="opacity-80">
                 {(temps[b.id] ?? b.tempC).toFixed(1)}°C · {b.posture} · {b.rangeM} m
@@ -154,9 +201,20 @@ export function YoloDetectionDemo() {
       </div>
 
       {/* HUD chrome — top */}
-      <div className="pointer-events-none absolute left-3 top-3 flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice">
-        <span className="pulse-dot" />
-        YOLOv8-Thermal · {fps.toFixed(1)} fps · conf ≥ 0.60
+      <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1">
+        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice">
+          <span className="pulse-dot" />
+          YOLOv8-Thermal · {fps.toFixed(1)} fps · conf ≥ 0.60
+        </div>
+        <motion.div
+          key={shown.length}
+          initial={{ scale: 1.08, color: "#ff6a3d" }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+          className="rounded-full border border-ember/40 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ember"
+        >
+          Humans detected · {shown.length}
+        </motion.div>
       </div>
       <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1">
         <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -167,7 +225,7 @@ export function YoloDetectionDemo() {
         </div>
       </div>
 
-      {/* Scene analysis panel — bottom left */}
+      {/* Scene analysis */}
       <div className="pointer-events-none absolute bottom-3 left-3 w-[260px] rounded-md border border-white/10 bg-black/70 p-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
         <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-1.5 text-ember">
           <span>Scene analysis</span>
@@ -201,7 +259,6 @@ export function YoloDetectionDemo() {
         </dl>
       </div>
 
-      {/* Bottom right — flight telemetry */}
       <div className="pointer-events-none absolute bottom-3 right-3 rounded-md border border-white/10 bg-black/70 p-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
         <div className="space-y-1 text-right">
           <div>AGL 42 m · gimbal −38°</div>
