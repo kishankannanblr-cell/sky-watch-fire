@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 
-const nav: { to: string; label: string; exact?: boolean }[] = [
+const nav: { to: string; label: string; exact?: boolean; hash?: string }[] = [
   { to: "/", label: "Home", exact: true },
   { to: "/detection", label: "Detection" },
-  { to: "/thermal", label: "Thermal AI" },
   { to: "/missions", label: "Missions" },
   { to: "/command", label: "Command" },
+  { to: "/command", label: "Priority", hash: "priority" },
+  { to: "/thermal", label: "Thermal" },
 ];
 
 export function SiteHeader() {
@@ -19,8 +20,9 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((n) => (
             <Link
-              key={n.to}
+              key={`${n.to}${n.hash ?? ""}${n.label}`}
               to={n.to}
+              hash={n.hash}
               activeOptions={{ exact: n.exact }}
               activeProps={{ className: "bg-white/8 text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
@@ -43,8 +45,9 @@ export function SiteHeader() {
         <div className="glass-panel flex gap-1 rounded-full px-3 py-2">
           {nav.map((n) => (
             <Link
-              key={n.to}
+              key={`${n.to}${n.hash ?? ""}${n.label}`}
               to={n.to}
+              hash={n.hash}
               activeOptions={{ exact: n.exact }}
               activeProps={{ className: "text-foreground" }}
               inactiveProps={{ className: "text-muted-foreground" }}
