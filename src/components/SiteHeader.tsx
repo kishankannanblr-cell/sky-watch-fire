@@ -3,9 +3,10 @@ import { Link } from "@tanstack/react-router";
 const nav: { to: string; label: string; exact?: boolean }[] = [
   { to: "/", label: "Home", exact: true },
   { to: "/detection", label: "Detection" },
-  { to: "/thermal", label: "Thermal AI" },
   { to: "/missions", label: "Missions" },
   { to: "/command", label: "Command" },
+  { to: "/command", label: "Priority", hash: "priority" },
+  { to: "/thermal", label: "Thermal" },
 ];
 
 export function SiteHeader() {

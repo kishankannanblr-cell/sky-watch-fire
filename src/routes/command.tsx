@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import detectionFrame from "../assets/detection-frame.jpg";
 import { PageHero } from "../components/PageHero";
 import { CommanderConsole } from "../components/CommanderConsole";
+import { PriorityRankBoard } from "../components/PriorityRankBoard";
 
 export const Route = createFileRoute("/command")({
   head: () => ({
@@ -35,15 +36,40 @@ function Page() {
             <span className="text-foreground/40">This is the delivery.</span>
           </>
         }
-        lede="The drone's job ends the moment a confirmed detection lands in front of the incident commander. The console below is what that delivery looks like — a live thermal tile, a structured detection list, a sector pin, and a spoken callout the IC hears in their headset."
+        lede="The drone's job ends the moment a confirmed detection lands in front of the incident commander. The console below is what that delivery looks like — a live tile, a structured detection list, a sector pin, and a spoken callout the IC hears in their headset. Below that, the Priority Rank board turns each confirmed detection into an ordered dispatch call."
       />
 
       <section className="mx-auto max-w-[1400px] px-6 py-16">
         <CommanderConsole />
       </section>
 
-      {/* Comms stack */}
+      {/* Priority Ranking */}
       <section className="border-y border-white/10 bg-black/30">
+        <div className="mx-auto max-w-[1400px] px-6 py-20">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-4">
+            <div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
+                05 / Priority Rank
+              </div>
+              <h2 className="mt-3 text-2xl font-medium md:text-3xl">
+                From confidence score to dispatch call.
+              </h2>
+              <p className="mt-3 max-w-2xl text-muted-foreground">
+                A confirmed detection is not yet an action. Every detection is ranked P1 → P5 against
+                the two variables a crew actually deploys against: <span className="text-foreground">is there fire</span>,
+                and <span className="text-foreground">how many victims</span>. The board pairs each rank with the tactical team it dispatches.
+              </p>
+            </div>
+            <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              Fig. 04.2 — dispatch board
+            </div>
+          </div>
+          <PriorityRankBoard />
+        </div>
+      </section>
+
+      {/* Comms stack */}
+      <section className="border-b border-white/10">
         <div className="mx-auto grid max-w-[1400px] gap-10 px-6 py-20 md:grid-cols-[1fr_1.3fr]">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
