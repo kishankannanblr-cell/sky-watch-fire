@@ -50,9 +50,9 @@ function Page() {
               Bounding box, label, confidence — every 22 milliseconds.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              The HUD above is what the drone sees. Each yellow box is a YOLO
-              detection on a thermal frame. The label reads <code className="text-ice">person · 0.94</code>:
-              the model is 94% sure the highlighted heat signature is human-shaped.
+              The HUD above is what the drone sees. Each box is a YOLO
+              detection. The label reads <code className="text-ice">person · 0.94</code>:
+              the model is 94% sure the highlighted region is a person.
               The scan line is the frame the GPU is currently chewing on.
             </p>
             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">

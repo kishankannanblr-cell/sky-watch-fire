@@ -41,8 +41,8 @@ const triad = [
   },
   {
     code: "03",
-    title: "Stream",
-    body: "The live thermal video tile keeps the commander in the loop — with bounding boxes, audible callouts and a moving sector map of every active heat signature.",
+    title: "Rank",
+    body: "Every confirmed detection is scored against fire state and victim count, then queued P1 → P5 for the dispatch board — so SAR and Suppression teams get the right call, in the right order.",
     accent: "text-signal",
   },
 ];
@@ -60,14 +60,14 @@ function Index() {
               Why AI on the drone
             </div>
             <h2 className="mt-4 text-3xl font-medium md:text-5xl">
-              A human eye can't see through a black smoke column. A model can.
+              A detection without a rank is just noise.
             </h2>
             <p className="mt-5 text-muted-foreground md:text-lg">
-              Long-wave infrared sees right through smoke. A neural network
-              trained on thermal frames of people — standing, crawling, prone,
-              partly buried — converts that raw heat into a list of survivors
-              with coordinates. Doing that inference on the drone, not in a
-              datacenter, is what keeps the loop under one second.
+              A model finds people. A dispatch board turns those finds into
+              action. Every detection is ranked P1 → P5 against the two
+              variables that actually decide who rolls — is there fire, and
+              how many victims — so the incident commander sees a sorted
+              call list, not a wall of confidence scores.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -77,10 +77,11 @@ function Index() {
                 YOLO detection →
               </Link>
               <Link
-                to="/thermal"
+                to="/command"
+                hash="priority"
                 className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest hover:bg-white/10"
               >
-                Thermal physics
+                Priority ranking
               </Link>
             </div>
           </div>
