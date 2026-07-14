@@ -78,7 +78,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "AI-assisted firefighting drones: thermal cameras and YOLO models find humans through smoke and debris, relayed live to the incident commander.",
+          "AI-assisted firefighting drones: YOLO vision models find humans through smoke and debris, ranked P1 → P5 for the incident commander in under a second.",
       },
       { name: "author", content: "PYRA Vision" },
       { property: "og:type", content: "website" },
