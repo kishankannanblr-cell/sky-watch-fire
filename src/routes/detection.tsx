@@ -76,10 +76,10 @@ function Page() {
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["FLIR ADAS", "26k thermal frames of pedestrians in driving scenes — the bedrock of every thermal person-detector."],
-              ["KAIST Multispectral", "95k paired RGB + thermal frames, day and night. Teaches the model what a person looks like across temperatures."],
+              ["COCO Person", "Baseline person class from the COCO dataset — every general-purpose YOLO checkpoint starts here."],
+              ["Wildfire Smoke Set", "Field-captured frames of pedestrians partially occluded by smoke and haze."],
               ["Field captures", "120k+ frames from real fire-ground drone flights — survivors prone, partial-occlusion, crawling, post-collapse."],
-              ["Synthetic smoke", "Domain-randomized renders: humans in volumetric smoke, varied IR contrast, debris occlusion."],
+              ["Synthetic smoke", "Domain-randomized renders: humans in volumetric smoke, varied contrast, debris occlusion."],
             ].map(([t, b]) => (
               <div key={t} className="bg-background p-6">
                 <h3 className="text-base font-medium">{t}</h3>
