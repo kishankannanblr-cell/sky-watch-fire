@@ -6,13 +6,13 @@ import { YoloDetectionDemo } from "../components/YoloDetectionDemo";
 export const Route = createFileRoute("/detection")({
   head: () => ({
     meta: [
-      { title: "Detection — YOLO + thermal human detection | PYRA Vision" },
+      { title: "Detection — YOLO human detection on a firefighting drone | PYRA Vision" },
       {
         name: "description",
         content:
-          "How a thermal-tuned YOLOv8 model finds people through dense wildfire smoke at 45+ FPS on a drone's edge GPU, and how confidence becomes a coordinate.",
+          "How a YOLOv8 vision model finds people through smoke and debris at 45+ FPS on a drone's edge GPU, and how confidence becomes a coordinate.",
       },
-      { property: "og:title", content: "YOLO + thermal human detection" },
+      { property: "og:title", content: "YOLO human detection on a firefighting drone" },
       {
         property: "og:description",
         content: "Edge AI on a firefighting drone that finds humans in smoke.",
