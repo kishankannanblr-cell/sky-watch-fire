@@ -44,6 +44,25 @@ function Page() {
         <CommanderConsole />
       </section>
 
+      <section className="border-t border-white/10 bg-black/20">
+        <div className="mx-auto max-w-[1400px] px-6 py-16">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
+            <div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
+                04.1 / Telemetry
+              </div>
+              <h2 className="mt-3 text-2xl font-medium md:text-3xl">
+                Live latency &amp; confidence.
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                Hover any bar or point for exact values. Toggle stages in the legend, or drag the brush on the confidence chart to zoom a time range.
+              </p>
+            </div>
+          </div>
+          <CommandTelemetry />
+        </div>
+      </section>
+
       {/* Priority Ranking */}
       <section className="border-y border-white/10 bg-black/30">
         <div className="mx-auto max-w-[1400px] px-6 py-20">
