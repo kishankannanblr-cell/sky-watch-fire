@@ -1,25 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import detectionFrame from "../assets/detection-frame.jpg";
+import { TacticalMap, type MapDetection } from "./TacticalMap";
 
 type Status = "pending" | "confirmed" | "dismissed";
 
 type Detection = {
   id: string;
   conf: number;
-  bearing: number; // degrees from north
-  dist: number; // meters
+  bearing: number;
+  dist: number;
   motion: "low" | "moving" | "still";
-  arriveAt: number; // ms after cycle start
+  arriveAt: number;
 };
 
 const SEED: Detection[] = [
-  { id: "H-018", conf: 0.94, bearing: 41,  dist: 38, motion: "low",    arriveAt: 400 },
-  { id: "H-019", conf: 0.88, bearing: 65,  dist: 52, motion: "still",  arriveAt: 2800 },
+  { id: "H-018", conf: 0.94, bearing: 41, dist: 38, motion: "low", arriveAt: 400 },
+  { id: "H-019", conf: 0.88, bearing: 65, dist: 52, motion: "still", arriveAt: 2800 },
   { id: "H-020", conf: 0.91, bearing: 118, dist: 71, motion: "moving", arriveAt: 5200 },
+  { id: "H-021", conf: 0.82, bearing: 202, dist: 44, motion: "moving", arriveAt: 8000 },
 ];
 
-const CYCLE_MS = 16000;
+type StatusFilter = "all" | "pending" | "confirmed" | "dismissed";
 
 function fmtTime(ms: number) {
   const total = Math.floor(ms / 1000);
@@ -28,84 +31,125 @@ function fmtTime(ms: number) {
   return `00:${m}:${s}`;
 }
 
-function bearingToXY(bearing: number, dist: number) {
-  // Map drone at (100,100) in a 200x200 viewBox; 1m ≈ 1.0 svg units (scale to fit ~90m).
-  const rad = (bearing * Math.PI) / 180;
-  return {
-    x: 100 + Math.sin(rad) * dist,
-    y: 100 - Math.cos(rad) * dist,
-  };
-}
-
 export function CommanderConsole() {
   const [statuses, setStatuses] = useState<Record<string, Status>>({});
   const [visible, setVisible] = useState<string[]>([]);
-  const [confirmedAt, setConfirmedAt] = useState<Record<string, string>>({});
-  const [callout, setCallout] = useState<{ key: number; tone: "alert" | "ok" | "muted"; text: string }>({
+  const [decidedAt, setDecidedAt] = useState<Record<string, string>>({});
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<StatusFilter>("all");
+  const [hoverId, setHoverId] = useState<string | null>(null);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [callout, setCallout] = useState<{
+    key: number;
+    tone: "alert" | "ok" | "muted";
+    text: string;
+  }>({
     key: 0,
-    tone: "alert",
+    tone: "muted",
     text: "Awaiting first detection from UAS-04…",
   });
-  const [hoverId, setHoverId] = useState<string | null>(null);
   const calloutKey = useRef(0);
   const cycleStart = useRef(Date.now());
+  const streamTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   const pushCallout = (tone: "alert" | "ok" | "muted", text: string) => {
     calloutKey.current += 1;
     setCallout({ key: calloutKey.current, tone, text });
   };
 
-  // Cycle: stream detections in, then reset 4s after the last action.
+  const startStream = () => {
+    streamTimers.current.forEach(clearTimeout);
+    streamTimers.current = [];
+    cycleStart.current = Date.now();
+    setStatuses({});
+    setVisible([]);
+    setDecidedAt({});
+    pushCallout("muted", "Sweep in progress · UAS-04 advancing on sector C");
+    SEED.forEach((d) => {
+      streamTimers.current.push(
+        setTimeout(() => {
+          setVisible((v) => (v.includes(d.id) ? v : [...v, d.id]));
+          setStatuses((s) => (s[d.id] ? s : { ...s, [d.id]: "pending" }));
+          pushCallout(
+            "alert",
+            `New detection ${d.id} · bearing ${String(d.bearing).padStart(3, "0")}° · conf ${d.conf.toFixed(2)}`,
+          );
+        }, d.arriveAt),
+      );
+    });
+  };
+
   useEffect(() => {
-    let timers: ReturnType<typeof setTimeout>[] = [];
-    const startCycle = () => {
-      cycleStart.current = Date.now();
-      setStatuses({});
-      setVisible([]);
-      setConfirmedAt({});
-      pushCallout("muted", "Sweep in progress · UAS-04 advancing on sector C");
-      SEED.forEach((d) => {
-        timers.push(
-          setTimeout(() => {
-            setVisible((v) => (v.includes(d.id) ? v : [...v, d.id]));
-            setStatuses((s) => ({ ...s, [d.id]: "pending" }));
-            pushCallout(
-              "alert",
-              `New detection ${d.id} · bearing ${String(d.bearing).padStart(3, "0")}° · conf ${d.conf.toFixed(2)} — awaiting confirmation`,
-            );
-          }, d.arriveAt),
-        );
-      });
-    };
-    startCycle();
-    const loop = setInterval(startCycle, CYCLE_MS);
-    return () => {
-      clearInterval(loop);
-      timers.forEach(clearTimeout);
-    };
+    startStream();
+    return () => streamTimers.current.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const decide = (id: string, next: Status) => {
     setStatuses((s) => ({ ...s, [id]: next }));
+    setDecidedAt((c) => ({ ...c, [id]: fmtTime(Date.now() - cycleStart.current) }));
     if (next === "confirmed") {
-      setConfirmedAt((c) => ({ ...c, [id]: fmtTime(Date.now() - cycleStart.current) }));
-      pushCallout("ok", `${id} confirmed by IC. Relayed to ground crews — Eng-3, Truck-1.`);
+      pushCallout("ok", `${id} confirmed. Relayed to Eng-3, Truck-1.`);
+      toast.success(`${id} dispatch confirmed`, {
+        description: "Eng-3, Truck-1 routed to grid.",
+      });
     } else {
-      pushCallout("muted", `${id} dismissed — flagged for retraining queue.`);
+      pushCallout("muted", `${id} dismissed — flagged for retraining.`);
+      toast(`${id} dismissed`, {
+        description: "Sent to model retraining queue.",
+      });
     }
   };
 
+  const reset = () => {
+    startStream();
+    toast.message("Drill reset", { description: "Streaming detections from t=0." });
+  };
+
   const counts = useMemo(() => {
-    const all = visible.length;
-    let c = 0, d = 0, p = 0;
+    let c = 0,
+      d = 0,
+      p = 0;
     visible.forEach((id) => {
       const s = statuses[id];
       if (s === "confirmed") c++;
       else if (s === "dismissed") d++;
       else p++;
     });
-    return { all, c, d, p };
+    return { all: visible.length, c, d, p };
   }, [visible, statuses]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return SEED.filter((d) => visible.includes(d.id)).filter((d) => {
+      const status = statuses[d.id] ?? "pending";
+      if (filter !== "all" && status !== filter) return false;
+      if (!q) return true;
+      return (
+        d.id.toLowerCase().includes(q) ||
+        d.motion.toLowerCase().includes(q) ||
+        String(d.bearing).includes(q) ||
+        "person".includes(q)
+      );
+    });
+  }, [query, filter, visible, statuses]);
+
+  const mapDetections: MapDetection[] = SEED.filter((d) => visible.includes(d.id)).map(
+    (d) => ({
+      id: d.id,
+      bearing: d.bearing,
+      dist: d.dist,
+      conf: d.conf,
+      status: statuses[d.id] ?? "pending",
+    }),
+  );
+
+  const filters: { key: StatusFilter; label: string; tone: string }[] = [
+    { key: "all", label: "All", tone: "text-foreground" },
+    { key: "pending", label: "Pending", tone: "text-ember" },
+    { key: "confirmed", label: "Confirmed", tone: "text-ice" },
+    { key: "dismissed", label: "Dismissed", tone: "text-muted-foreground" },
+  ];
 
   return (
     <div className="glass-panel grid gap-px overflow-hidden rounded-2xl bg-white/[0.04] lg:grid-cols-[1.4fr_1fr]">
@@ -140,8 +184,8 @@ export function CommanderConsole() {
                   callout.tone === "alert"
                     ? "bg-ember"
                     : callout.tone === "ok"
-                    ? "bg-ice"
-                    : "bg-white/30"
+                      ? "bg-ice"
+                      : "bg-white/30"
                 }`}
               >
                 {callout.tone === "alert" ? "!" : callout.tone === "ok" ? "✓" : "·"}
@@ -159,28 +203,85 @@ export function CommanderConsole() {
 
       {/* Detection queue + map */}
       <div className="flex flex-col bg-black/40">
-        <div className="flex items-center justify-between border-b border-white/10 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          <span>Detection queue · human-in-the-loop</span>
-          <span className="text-ember">{counts.p} pending</span>
+        {/* Counters */}
+        <div className="grid grid-cols-4 border-b border-white/10 font-mono text-[10px] uppercase tracking-widest">
+          <div className="px-3 py-2.5">
+            <div className="text-muted-foreground">Active</div>
+            <div className="text-sm text-foreground">{counts.all}</div>
+          </div>
+          <div className="border-l border-white/10 px-3 py-2.5">
+            <div className="text-muted-foreground">Pending</div>
+            <div className="text-sm text-ember">{counts.p}</div>
+          </div>
+          <div className="border-l border-white/10 px-3 py-2.5">
+            <div className="text-muted-foreground">Resolved</div>
+            <div className="text-sm text-ice">{counts.c}</div>
+          </div>
+          <div className="border-l border-white/10 px-3 py-2.5">
+            <div className="text-muted-foreground">Dismissed</div>
+            <div className="text-sm text-muted-foreground">{counts.d}</div>
+          </div>
         </div>
-        <ul className="divide-y divide-white/5">
+
+        {/* Filters */}
+        <div className="flex flex-col gap-2 border-b border-white/10 px-3 py-2">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search by ID, bearing, motion…"
+            className="w-full rounded-md border border-white/10 bg-black/40 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ember/60 focus:outline-none"
+          />
+          <div className="flex flex-wrap gap-1.5">
+            {filters.map((f) => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => setFilter(f.key)}
+                className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest transition ${
+                  filter === f.key
+                    ? "border-ember/60 bg-ember/15 text-ember"
+                    : `border-white/10 ${f.tone} hover:bg-white/5`
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={reset}
+              className="ml-auto rounded-full border border-white/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-white/5"
+            >
+              ↻ Reset drill
+            </button>
+          </div>
+        </div>
+
+        <ul className="min-h-[8rem] divide-y divide-white/5">
           <AnimatePresence initial={false}>
-            {SEED.filter((d) => visible.includes(d.id)).map((d) => {
+            {filtered.map((d) => {
               const status = statuses[d.id] ?? "pending";
               const isHover = hoverId === d.id;
               return (
                 <motion.li
                   key={d.id}
+                  layout
                   initial={{ opacity: 0, x: 16, backgroundColor: "rgba(255,106,61,0.18)" }}
                   animate={{
-                    opacity: status === "dismissed" ? 0.4 : 1,
+                    opacity: 1,
                     x: 0,
                     backgroundColor: isHover ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0)",
                   }}
-                  transition={{ duration: 0.5 }}
+                  exit={{
+                    opacity: 0,
+                    x: status === "confirmed" ? 320 : -320,
+                    transition: { duration: 0.35 },
+                  }}
+                  transition={{ duration: 0.4 }}
                   onMouseEnter={() => setHoverId(d.id)}
                   onMouseLeave={() => setHoverId(null)}
-                  className="px-4 py-3"
+                  onClick={() => setFocusId(d.id)}
+                  className="cursor-pointer px-4 py-3"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -189,8 +290,8 @@ export function CommanderConsole() {
                           status === "confirmed"
                             ? "bg-ice/15 text-ice"
                             : status === "dismissed"
-                            ? "bg-white/10 text-muted-foreground"
-                            : "bg-ember/15 text-ember"
+                              ? "bg-white/10 text-muted-foreground"
+                              : "bg-ember/15 text-ember"
                         }`}
                       >
                         {status === "pending" ? (
@@ -220,7 +321,7 @@ export function CommanderConsole() {
                     <div className="text-right">
                       <div className="font-mono text-xs text-ice">{d.conf.toFixed(2)}</div>
                       <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                        {confirmedAt[d.id] ?? fmtTime(d.arriveAt)}
+                        {decidedAt[d.id] ?? fmtTime(d.arriveAt)}
                       </div>
                     </div>
                   </div>
@@ -228,14 +329,20 @@ export function CommanderConsole() {
                     <div className="mt-2 flex gap-2">
                       <button
                         type="button"
-                        onClick={() => decide(d.id, "confirmed")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          decide(d.id, "confirmed");
+                        }}
                         className="flex-1 rounded-md border border-ice/40 bg-ice/10 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-ice transition hover:bg-ice/20"
                       >
                         ✓ Confirm
                       </button>
                       <button
                         type="button"
-                        onClick={() => decide(d.id, "dismissed")}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          decide(d.id, "dismissed");
+                        }}
                         className="flex-1 rounded-md border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:bg-white/10"
                       >
                         × Dismiss
@@ -244,7 +351,7 @@ export function CommanderConsole() {
                   )}
                   {status === "confirmed" && (
                     <div className="mt-2 font-mono text-[10px] uppercase tracking-widest text-ice">
-                      ✓ Confirmed by IC · {confirmedAt[d.id]} · relayed
+                      ✓ Confirmed by IC · {decidedAt[d.id]} · relayed
                     </div>
                   )}
                   {status === "dismissed" && (
@@ -256,143 +363,25 @@ export function CommanderConsole() {
               );
             })}
           </AnimatePresence>
+          {filtered.length === 0 && (
+            <li className="px-4 py-6 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+              No detections match filter
+            </li>
+          )}
         </ul>
 
-        {/* Queue footer */}
-        <div className="border-t border-white/10 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          {counts.all} detected · <span className="text-ice">{counts.c} confirmed</span> ·{" "}
-          {counts.d} dismissed · <span className="text-ember">{counts.p} pending</span>
-        </div>
-
-        {/* Sector map */}
-        <div className="relative mt-auto h-64 border-t border-white/10 bg-black/60">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,oklch(1_0_0_/_0.07)_1px,transparent_0)] [background-size:14px_14px]" />
-          <div className="absolute inset-x-0 top-3 flex items-center justify-between px-4 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            <span>Sector map · WGS-84</span>
-            <span className="text-ice">N ↑</span>
+        {/* Interactive tactical map */}
+        <div className="relative mt-auto h-72 border-t border-white/10">
+          <div className="pointer-events-none absolute left-3 top-3 z-[500] rounded-full border border-white/10 bg-black/70 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            Tactical map · click marker for popup
           </div>
-
-          <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
-            <defs>
-              <radialGradient id="droneGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgb(124,196,255)" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="rgb(124,196,255)" stopOpacity="0" />
-              </radialGradient>
-              <radialGradient id="fireGrad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgb(255,106,61)" stopOpacity="0.18" />
-                <stop offset="100%" stopColor="rgb(255,106,61)" stopOpacity="0.02" />
-              </radialGradient>
-            </defs>
-
-            {/* topographic contours */}
-            {[35, 55, 75].map((r) => (
-              <circle
-                key={r}
-                cx="100"
-                cy="100"
-                r={r}
-                fill="none"
-                stroke="rgba(255,255,255,0.05)"
-                strokeWidth="0.6"
-                strokeDasharray="2 3"
-              />
-            ))}
-
-            {/* fire perimeter — organic blob, breathing */}
-            <motion.g
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              style={{ transformOrigin: "150px 70px" } as React.CSSProperties}
-            >
-              <path
-                d="M 130 40 Q 165 35 175 60 Q 188 80 170 100 Q 155 115 135 105 Q 115 95 118 75 Q 120 50 130 40 Z"
-                fill="url(#fireGrad)"
-                stroke="rgb(255,106,61)"
-                strokeOpacity="0.55"
-                strokeWidth="0.8"
-                strokeDasharray="3 2"
-              />
-            </motion.g>
-
-            {/* drone FOV cone — 60° pointing N-NE */}
-            <g transform="rotate(30 100 100)">
-              <path
-                d="M 100 100 L 70 30 A 70 70 0 0 1 130 30 Z"
-                fill="url(#droneGlow)"
-                opacity="0.55"
-              />
-            </g>
-
-            {/* drone glyph — slow drift */}
-            <motion.g
-              animate={{ x: [0, 3, -2, 0], y: [0, -2, 2, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <circle cx="100" cy="100" r="6" fill="rgba(124,196,255,0.15)" stroke="rgb(124,196,255)" strokeWidth="0.6" />
-              <polygon points="100,93 105,103 100,100 95,103" fill="rgb(124,196,255)" />
-              <line x1="100" y1="100" x2="100" y2="78" stroke="rgb(124,196,255)" strokeWidth="0.4" strokeDasharray="1 2" />
-            </motion.g>
-
-            {/* survivor pins */}
-            {SEED.filter((d) => visible.includes(d.id)).map((d) => {
-              const { x, y } = bearingToXY(d.bearing, d.dist);
-              const status = statuses[d.id] ?? "pending";
-              if (status === "dismissed") return null;
-              const color = status === "confirmed" ? "rgb(124,196,255)" : "rgb(255,106,61)";
-              const isHover = hoverId === d.id;
-              return (
-                <g key={d.id}>
-                  {status === "pending" && (
-                    <motion.circle
-                      cx={x}
-                      cy={y}
-                      r="3"
-                      fill={color}
-                      fillOpacity="0.35"
-                      animate={{ r: [3, 8, 3], opacity: [0.5, 0, 0.5] }}
-                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut" }}
-                    />
-                  )}
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r={isHover ? 3 : 2.2}
-                    fill={color}
-                    stroke="white"
-                    strokeOpacity={isHover ? 0.9 : 0.3}
-                    strokeWidth="0.4"
-                  />
-                  <text
-                    x={x + 4}
-                    y={y - 3}
-                    fill={color}
-                    fontSize="4"
-                    fontFamily="ui-monospace, monospace"
-                    style={{ letterSpacing: "0.05em" }}
-                  >
-                    {d.id}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* scale bar */}
-            <g transform="translate(12 184)">
-              <line x1="0" y1="0" x2="40" y2="0" stroke="rgba(255,255,255,0.4)" strokeWidth="0.6" />
-              <line x1="0" y1="-2" x2="0" y2="2" stroke="rgba(255,255,255,0.4)" strokeWidth="0.6" />
-              <line x1="40" y1="-2" x2="40" y2="2" stroke="rgba(255,255,255,0.4)" strokeWidth="0.6" />
-              <text x="0" y="-3" fill="rgba(255,255,255,0.55)" fontSize="3.5" fontFamily="ui-monospace, monospace">
-                0 — 40 m
-              </text>
-            </g>
-          </svg>
-
-          {/* legend */}
-          <div className="absolute inset-x-0 bottom-2 flex justify-center gap-4 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-            <span className="flex items-center gap-1"><span className="text-ice">▲</span> UAS-04</span>
-            <span className="flex items-center gap-1"><span className="text-ember">◉</span> Survivor</span>
-            <span className="flex items-center gap-1"><span className="text-ember/70">░</span> Fire perimeter</span>
-          </div>
+          <TacticalMap
+            detections={mapDetections}
+            hoverId={hoverId}
+            focusId={focusId}
+            onConfirm={(id) => decide(id, "confirmed")}
+            onDismiss={(id) => decide(id, "dismissed")}
+          />
         </div>
       </div>
     </div>
