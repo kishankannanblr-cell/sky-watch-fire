@@ -9,17 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ThermalRouteImport } from './routes/thermal'
 import { Route as MissionsRouteImport } from './routes/missions'
 import { Route as DetectionRouteImport } from './routes/detection'
 import { Route as CommandRouteImport } from './routes/command'
 import { Route as IndexRouteImport } from './routes/index'
 
-const ThermalRoute = ThermalRouteImport.update({
-  id: '/thermal',
-  path: '/thermal',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MissionsRoute = MissionsRouteImport.update({
   id: '/missions',
   path: '/missions',
@@ -46,14 +40,12 @@ export interface FileRoutesByFullPath {
   '/command': typeof CommandRoute
   '/detection': typeof DetectionRoute
   '/missions': typeof MissionsRoute
-  '/thermal': typeof ThermalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/command': typeof CommandRoute
   '/detection': typeof DetectionRoute
   '/missions': typeof MissionsRoute
-  '/thermal': typeof ThermalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +53,13 @@ export interface FileRoutesById {
   '/command': typeof CommandRoute
   '/detection': typeof DetectionRoute
   '/missions': typeof MissionsRoute
-  '/thermal': typeof ThermalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/command' | '/detection' | '/missions' | '/thermal'
+  fullPaths: '/' | '/command' | '/detection' | '/missions'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/command' | '/detection' | '/missions' | '/thermal'
-  id: '__root__' | '/' | '/command' | '/detection' | '/missions' | '/thermal'
+  to: '/' | '/command' | '/detection' | '/missions'
+  id: '__root__' | '/' | '/command' | '/detection' | '/missions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,18 +67,10 @@ export interface RootRouteChildren {
   CommandRoute: typeof CommandRoute
   DetectionRoute: typeof DetectionRoute
   MissionsRoute: typeof MissionsRoute
-  ThermalRoute: typeof ThermalRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/thermal': {
-      id: '/thermal'
-      path: '/thermal'
-      fullPath: '/thermal'
-      preLoaderRoute: typeof ThermalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/missions': {
       id: '/missions'
       path: '/missions'
@@ -124,18 +107,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommandRoute: CommandRoute,
   DetectionRoute: DetectionRoute,
   MissionsRoute: MissionsRoute,
-  ThermalRoute: ThermalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
