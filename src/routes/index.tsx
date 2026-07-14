@@ -87,8 +87,8 @@ function Index() {
           </div>
           <div className="overflow-hidden rounded-2xl border border-white/10">
             <img
-              src={heroThermal}
-              alt="Thermal drone view of two humans through wildfire smoke"
+              src={heroImage}
+              alt="Firefighting drone flying a night mission over an active fire ground"
               width={1600}
               height={1024}
               loading="lazy"
