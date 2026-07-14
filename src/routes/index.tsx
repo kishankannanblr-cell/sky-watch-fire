@@ -102,7 +102,7 @@ function Index() {
       <section className="mx-auto max-w-[1400px] px-6 pb-24">
         <div className="mb-8 flex items-end justify-between gap-6">
           <h2 className="text-2xl font-medium md:text-4xl">
-            The AI loop: detect, communicate, stream.
+            The AI loop: detect, communicate, rank.
           </h2>
           <div className="hidden font-mono text-[10px] uppercase tracking-widest text-muted-foreground md:block">
             Pipeline overview
