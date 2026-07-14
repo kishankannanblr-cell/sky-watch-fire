@@ -71,7 +71,7 @@ export function CommanderConsole() {
             setStatuses((s) => ({ ...s, [d.id]: "pending" }));
             pushCallout(
               "alert",
-              `New heat signature ${d.id} · bearing ${String(d.bearing).padStart(3, "0")}° · conf ${d.conf.toFixed(2)} — awaiting confirmation`,
+              `New detection ${d.id} · bearing ${String(d.bearing).padStart(3, "0")}° · conf ${d.conf.toFixed(2)} — awaiting confirmation`,
             );
           }, d.arriveAt),
         );
