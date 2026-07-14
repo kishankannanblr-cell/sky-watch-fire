@@ -237,11 +237,11 @@ export function YoloDetectionDemo() {
             <dd className="text-foreground">{shown.length}</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Ambient (LWIR avg)</dt>
+            <dt>Ambient (scene avg)</dt>
             <dd className="text-foreground">{ambient.toFixed(1)}°C</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Hot spots &gt;400°C</dt>
+            <dt>Fire hot spots</dt>
             <dd className="text-ember">{hotSpots} · active fire</dd>
           </div>
           <div className="flex justify-between gap-2">
