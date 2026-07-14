@@ -15,7 +15,7 @@ export function HeroFuturistic() {
         {/* corner telemetry */}
         <div className="pointer-events-none absolute left-6 top-24 hidden md:block">
           <TelemetryTag
-            label="YOLOv8-Thermal"
+            label="YOLOv8 Vision"
             value="47 FPS · 0.94 mAP"
             icon="◎"
             accent="ember"
@@ -32,8 +32,8 @@ export function HeroFuturistic() {
         </div>
         <div className="pointer-events-none absolute left-6 bottom-32 hidden md:block">
           <TelemetryTag
-            label="Smoke opacity"
-            value="87% · LWIR clear"
+            label="Priority queue"
+            value="P1 · SAR + Suppression"
             icon="≋"
             accent="ice"
           />
