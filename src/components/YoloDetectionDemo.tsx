@@ -204,7 +204,7 @@ export function YoloDetectionDemo() {
       <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice">
           <span className="pulse-dot" />
-          YOLOv8-Thermal · {fps.toFixed(1)} fps · conf ≥ 0.60
+          YOLOv8 · {fps.toFixed(1)} fps · conf ≥ 0.60
         </div>
         <motion.div
           key={shown.length}
@@ -218,10 +218,10 @@ export function YoloDetectionDemo() {
       </div>
       <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1">
         <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          FLIR Boson 640×512 · LWIR
+          RGB 4K · 640×512 crop
         </div>
         <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          Palette: White-Hot · AGC on
+          Gimbal stabilised · AGC on
         </div>
       </div>
 
