@@ -57,7 +57,7 @@ function Page() {
             </p>
             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
               <li className="flex gap-3"><span className="text-ember">◉</span> Single-shot detector — no region proposals, one forward pass per frame.</li>
-              <li className="flex gap-3"><span className="text-ember">◉</span> 640×512 LWIR input, color-normalized to the model's training distribution.</li>
+              <li className="flex gap-3"><span className="text-ember">◉</span> 640×512 RGB input, color-normalized to the model's training distribution.</li>
               <li className="flex gap-3"><span className="text-ember">◉</span> TensorRT INT8 export — 4× faster than vanilla PyTorch on Jetson Orin.</li>
               <li className="flex gap-3"><span className="text-ember">◉</span> Detections below 0.6 confidence are dropped before they ever reach the IC.</li>
             </ul>
