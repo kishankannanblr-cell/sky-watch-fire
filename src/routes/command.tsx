@@ -3,6 +3,7 @@ import detectionFrame from "../assets/detection-frame.jpg";
 import { PageHero } from "../components/PageHero";
 import { CommanderConsole } from "../components/CommanderConsole";
 import { PriorityRankBoard } from "../components/PriorityRankBoard";
+import { CommandTelemetry } from "../components/CommandTelemetry";
 
 export const Route = createFileRoute("/command")({
   head: () => ({
