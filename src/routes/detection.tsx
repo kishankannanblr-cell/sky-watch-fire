@@ -101,10 +101,10 @@ function Page() {
               Why edge inference matters.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Sending raw 4K + thermal video back to a ground station and
-              running YOLO there would take 3–5 seconds round-trip on a
-              degraded radio link. A trapped person can move 20 m in that
-              time. So the model lives on the drone.
+              Sending raw 4K video back to a ground station and running YOLO
+              there would take 3–5 seconds round-trip on a degraded radio
+              link. A trapped person can move 20 m in that time. So the
+              model lives on the drone.
             </p>
           </div>
           <div className="glass-panel rounded-2xl">
