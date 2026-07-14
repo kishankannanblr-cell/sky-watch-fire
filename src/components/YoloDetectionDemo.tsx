@@ -263,7 +263,7 @@ export function YoloDetectionDemo() {
         <div className="space-y-1 text-right">
           <div>AGL 42 m · gimbal −38°</div>
           <div>RTK fix · mesh −71 dBm</div>
-          <div className="text-ice">yolov8s-thermal · v3.2 · 9f1c</div>
+          <div className="text-ice">yolov8s · v3.2 · 9f1c</div>
         </div>
       </div>
     </div>
