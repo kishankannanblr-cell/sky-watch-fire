@@ -111,7 +111,7 @@ export function YoloDetectionDemo() {
     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
       <img
         src={detectionFrame}
-        alt="Thermal aerial frame from a firefighting drone, three partial human heat signatures visible through smoke"
+        alt="Aerial frame from a firefighting drone, three partial human figures visible through smoke"
         width={1280}
         height={896}
         loading="lazy"
