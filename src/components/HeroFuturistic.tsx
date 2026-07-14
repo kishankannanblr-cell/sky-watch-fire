@@ -55,7 +55,7 @@ export function HeroFuturistic() {
             className="glass-panel inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:text-foreground"
           >
             <span className="grid h-4 w-4 place-items-center rounded-full bg-ember/30 text-ember text-[10px]">◉</span>
-            Unlock thermal vision
+            See the detection loop
             <span>→</span>
           </Link>
 
@@ -66,14 +66,13 @@ export function HeroFuturistic() {
             className="mt-6 text-[44px] font-medium leading-[0.98] tracking-tight md:text-[88px]"
           >
             One model.{" "}
-            <span className="text-foreground/40">Every life found.</span>
+            <span className="text-foreground/40">Every life ranked.</span>
           </motion.h1>
 
           <p className="mt-6 max-w-xl text-base text-muted-foreground md:text-lg">
-            AI vision on a firefighting drone — finding humans through dense
-            smoke and building debris with thermal cameras and YOLO, and
-            relaying every detection to the incident commander in under a
-            second.
+            AI vision on a firefighting drone — finding humans through smoke
+            and building debris with YOLO, then ranking every room P1 → P5
+            for the incident commander in under a second.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
