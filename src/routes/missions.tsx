@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import heroThermal from "../assets/hero-thermal.jpg";
-import thermalSmoke from "../assets/thermal-smoke.jpg";
-import thermalDebris from "../assets/thermal-debris.jpg";
+import droneNight from "../assets/drone-night.jpg";
+import detectionFrame from "../assets/detection-frame.jpg";
 import { PageHero } from "../components/PageHero";
 import { ScenarioStepper } from "../components/ScenarioStepper";
 
@@ -19,8 +18,8 @@ export const Route = createFileRoute("/missions")({
         property: "og:description",
         content: "Wildfire, structure fire, and building collapse scenarios.",
       },
-      { property: "og:image", content: heroThermal },
-      { name: "twitter:image", content: heroThermal },
+      { property: "og:image", content: droneNight },
+      { name: "twitter:image", content: droneNight },
     ],
   }),
   component: Page,
@@ -29,28 +28,28 @@ export const Route = createFileRoute("/missions")({
 const SCENARIOS = [
   {
     title: "Wildfire — trapped hikers in a smoke column",
-    img: heroThermal,
+    img: droneNight,
     tag: "01 / Wildland",
-    body: "A lightning-strike ignition cuts off two hikers on a ridge. The visible feed is solid black smoke. The drone's LWIR sensor + YOLO model finds both heat signatures within seconds of arriving on scene, geo-tags them, and the IC vectors a ground crew straight to the GPS pin.",
+    body: "A lightning-strike ignition cuts off two hikers on a ridge. The visible feed is heavy smoke. The drone's YOLO vision model finds both signatures within seconds of arriving on scene, geo-tags them, and the IC vectors a ground crew straight to the GPS pin.",
   },
   {
     title: "Structure fire — occupants behind walls of smoke",
-    img: thermalSmoke,
+    img: detectionFrame,
     tag: "02 / Structure",
-    body: "A three-story residential fire fills every hallway with dense smoke. The drone flies a tight orbit at window height. The model picks up two heat signatures on the second floor, one prone — call sign updated to 'patient down' before the entry team breaches the door.",
+    body: "A three-story residential fire fills every hallway with smoke. The drone flies a tight orbit at window height. The model picks up two people on the second floor, one prone — call sign updated to 'patient down' before the entry team breaches the door.",
   },
   {
-    title: "Building collapse — heat signatures under debris",
-    img: thermalDebris,
+    title: "Building collapse — trapped occupants under debris",
+    img: droneNight,
     tag: "03 / Debris / USAR",
-    body: "After a partial structural collapse, the drone fuses thermal with LiDAR to map void spaces. The classifier filters out hot rebar and burning insulation, leaving the IC a ranked list of probable trapped occupants — by location, signal strength, and motion.",
+    body: "After a partial structural collapse, the drone fuses vision with LiDAR to map void spaces. The classifier filters out clutter, leaving the IC a ranked list of probable trapped occupants — by location, signal strength, and motion.",
   },
 ];
 
 const FIELD_USE = [
-  ["Skydio X10", "Onboard VIO autonomy in smoke; thermal payload."],
-  ["Parrot Anafi USA Thermal", "FLIR Boson + 32× zoom, NDAA-compliant — most-deployed US public-safety thermal drone."],
-  ["DJI Matrice 30T", "Industrial thermal + RGB, common host for custom YOLO inference packages."],
+  ["Skydio X10", "Onboard VIO autonomy in smoke; multi-payload airframe."],
+  ["Parrot Anafi USA", "NDAA-compliant, 32× zoom — widely deployed in US public-safety programs."],
+  ["DJI Matrice 30T", "Industrial RGB + zoom, common host for custom YOLO inference packages."],
   ["Rain", "Forward-staged autonomous drone hangars that launch on detected ignitions."],
 ];
 
