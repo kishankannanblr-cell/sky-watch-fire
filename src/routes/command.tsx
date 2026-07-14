@@ -11,7 +11,7 @@ export const Route = createFileRoute("/command")({
       {
         name: "description",
         content:
-          "How AI detections from a firefighting drone reach the incident commander: structured messages, audible callouts, a live thermal tile, and human-in-the-loop confirmation.",
+          "How AI detections from a firefighting drone reach the incident commander: structured messages, audible callouts, a live video tile, and human-in-the-loop confirmation.",
       },
       { property: "og:title", content: "Incident commander relay" },
       {

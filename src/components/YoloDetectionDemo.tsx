@@ -111,7 +111,7 @@ export function YoloDetectionDemo() {
     <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
       <img
         src={detectionFrame}
-        alt="Thermal aerial frame from a firefighting drone, three partial human heat signatures visible through smoke"
+        alt="Aerial frame from a firefighting drone, three partial human figures visible through smoke"
         width={1280}
         height={896}
         loading="lazy"
@@ -204,7 +204,7 @@ export function YoloDetectionDemo() {
       <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1">
         <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice">
           <span className="pulse-dot" />
-          YOLOv8-Thermal · {fps.toFixed(1)} fps · conf ≥ 0.60
+          YOLOv8 · {fps.toFixed(1)} fps · conf ≥ 0.60
         </div>
         <motion.div
           key={shown.length}
@@ -218,10 +218,10 @@ export function YoloDetectionDemo() {
       </div>
       <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1">
         <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          FLIR Boson 640×512 · LWIR
+          RGB 4K · 640×512 crop
         </div>
         <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          Palette: White-Hot · AGC on
+          Gimbal stabilised · AGC on
         </div>
       </div>
 
@@ -237,11 +237,11 @@ export function YoloDetectionDemo() {
             <dd className="text-foreground">{shown.length}</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Ambient (LWIR avg)</dt>
+            <dt>Ambient (scene avg)</dt>
             <dd className="text-foreground">{ambient.toFixed(1)}°C</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Hot spots &gt;400°C</dt>
+            <dt>Fire hot spots</dt>
             <dd className="text-ember">{hotSpots} · active fire</dd>
           </div>
           <div className="flex justify-between gap-2">
@@ -263,7 +263,7 @@ export function YoloDetectionDemo() {
         <div className="space-y-1 text-right">
           <div>AGL 42 m · gimbal −38°</div>
           <div>RTK fix · mesh −71 dBm</div>
-          <div className="text-ice">yolov8s-thermal · v3.2 · 9f1c</div>
+          <div className="text-ice">yolov8s · v3.2 · 9f1c</div>
         </div>
       </div>
     </div>

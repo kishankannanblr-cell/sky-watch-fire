@@ -6,7 +6,6 @@ const nav: { to: string; label: string; exact?: boolean; hash?: string }[] = [
   { to: "/missions", label: "Missions" },
   { to: "/command", label: "Command" },
   { to: "/command", label: "Priority", hash: "priority" },
-  { to: "/thermal", label: "Thermal" },
 ];
 
 export function SiteHeader() {

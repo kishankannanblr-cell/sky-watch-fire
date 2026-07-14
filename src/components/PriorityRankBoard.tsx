@@ -84,7 +84,7 @@ const INCIDENTS: Incident[] = [
     bearing: 118,
     victims: 2,
     fire: false,
-    note: "Two signatures in vehicle off service road; no thermal fire signature within 400 m.",
+    note: "Two people in vehicle off service road; no active fire within 400 m.",
   },
   {
     id: "INC-04",

@@ -6,19 +6,19 @@ const STEPS = [
     id: "ingest",
     label: "Ingest",
     code: "01",
-    body: "Drone streams synchronized RGB + LWIR thermal at 30 FPS to an onboard NVIDIA Jetson Orin. Frames are color-normalized and fed to the detector queue.",
+    body: "Drone streams RGB video at 30 FPS to an onboard NVIDIA Jetson Orin. Frames are color-normalized and fed to the detector queue.",
   },
   {
     id: "detect",
     label: "Detect",
     code: "02",
-    body: "A YOLOv8-Thermal model — trained on FLIR ADAS, KAIST, and >120k field frames of people through smoke — runs single-shot detection at 45+ FPS on the edge.",
+    body: "A YOLOv8 vision model — trained on 120k+ field frames of people in smoke and debris — runs single-shot detection at 45+ FPS on the edge.",
   },
   {
     id: "classify",
     label: "Classify",
     code: "03",
-    body: "Each bounding box is scored: person vs. animal vs. heat clutter. A small MLP fuses motion, aspect ratio and thermal signature to suppress false positives from hot debris.",
+    body: "Each bounding box is scored: person vs. animal vs. clutter. A small MLP fuses motion and aspect ratio to suppress false positives.",
   },
   {
     id: "geotag",

@@ -6,13 +6,13 @@ import { YoloDetectionDemo } from "../components/YoloDetectionDemo";
 export const Route = createFileRoute("/detection")({
   head: () => ({
     meta: [
-      { title: "Detection — YOLO + thermal human detection | PYRA Vision" },
+      { title: "Detection — YOLO human detection on a firefighting drone | PYRA Vision" },
       {
         name: "description",
         content:
-          "How a thermal-tuned YOLOv8 model finds people through dense wildfire smoke at 45+ FPS on a drone's edge GPU, and how confidence becomes a coordinate.",
+          "How a YOLOv8 vision model finds people through smoke and debris at 45+ FPS on a drone's edge GPU, and how confidence becomes a coordinate.",
       },
-      { property: "og:title", content: "YOLO + thermal human detection" },
+      { property: "og:title", content: "YOLO human detection on a firefighting drone" },
       {
         property: "og:description",
         content: "Edge AI on a firefighting drone that finds humans in smoke.",
@@ -31,11 +31,11 @@ function Page() {
         chapter="01 / Detection"
         title={
           <>
-            YOLO, retrained on heat.{" "}
+            YOLO, tuned for smoke and debris.{" "}
             <span className="text-foreground/40">It sees what we can't.</span>
           </>
         }
-        lede="Visible-light vision dies the moment a smoke column goes black. A thermal-tuned YOLOv8 model — running on the drone's edge GPU — keeps finding people anyway, frame after frame, with confidence scores tight enough to act on."
+        lede="A human pilot's line of sight collapses the moment a smoke column goes black. A YOLOv8 vision model — running on the drone's edge GPU — keeps finding people anyway, frame after frame, with confidence scores tight enough to act on."
         meta="Reading time 5 min · Live demo"
       />
 
@@ -57,7 +57,7 @@ function Page() {
             </p>
             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
               <li className="flex gap-3"><span className="text-ember">◉</span> Single-shot detector — no region proposals, one forward pass per frame.</li>
-              <li className="flex gap-3"><span className="text-ember">◉</span> 640×512 LWIR input, color-normalized to the model's training distribution.</li>
+              <li className="flex gap-3"><span className="text-ember">◉</span> 640×512 RGB input, color-normalized to the model's training distribution.</li>
               <li className="flex gap-3"><span className="text-ember">◉</span> TensorRT INT8 export — 4× faster than vanilla PyTorch on Jetson Orin.</li>
               <li className="flex gap-3"><span className="text-ember">◉</span> Detections below 0.6 confidence are dropped before they ever reach the IC.</li>
             </ul>
@@ -76,10 +76,10 @@ function Page() {
           </div>
           <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["FLIR ADAS", "26k thermal frames of pedestrians in driving scenes — the bedrock of every thermal person-detector."],
-              ["KAIST Multispectral", "95k paired RGB + thermal frames, day and night. Teaches the model what a person looks like across temperatures."],
+              ["COCO Person", "Baseline person class from the COCO dataset — every general-purpose YOLO checkpoint starts here."],
+              ["Wildfire Smoke Set", "Field-captured frames of pedestrians partially occluded by smoke and haze."],
               ["Field captures", "120k+ frames from real fire-ground drone flights — survivors prone, partial-occlusion, crawling, post-collapse."],
-              ["Synthetic smoke", "Domain-randomized renders: humans in volumetric smoke, varied IR contrast, debris occlusion."],
+              ["Synthetic smoke", "Domain-randomized renders: humans in volumetric smoke, varied contrast, debris occlusion."],
             ].map(([t, b]) => (
               <div key={t} className="bg-background p-6">
                 <h3 className="text-base font-medium">{t}</h3>
@@ -101,10 +101,10 @@ function Page() {
               Why edge inference matters.
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Sending raw 4K + thermal video back to a ground station and
-              running YOLO there would take 3–5 seconds round-trip on a
-              degraded radio link. A trapped person can move 20 m in that
-              time. So the model lives on the drone.
+              Sending raw 4K video back to a ground station and running YOLO
+              there would take 3–5 seconds round-trip on a degraded radio
+              link. A trapped person can move 20 m in that time. So the
+              model lives on the drone.
             </p>
           </div>
           <div className="glass-panel rounded-2xl">
@@ -113,7 +113,7 @@ function Page() {
             </div>
             <ul className="divide-y divide-white/10">
               {[
-                ["Capture (LWIR sensor)", "8 ms"],
+                ["Capture (RGB sensor)", "8 ms"],
                 ["Color normalize + tensor pack", "4 ms"],
                 ["YOLOv8 forward pass (Jetson Orin, INT8)", "22 ms"],
                 ["Classifier + NMS", "6 ms"],
@@ -133,14 +133,14 @@ function Page() {
 
       <section className="mx-auto flex max-w-[1400px] flex-col gap-6 px-6 pb-16 md:flex-row md:items-end md:justify-between">
         <p className="max-w-2xl text-muted-foreground">
-          Next: how a thermal sensor sees a human at all — and why smoke is
-          basically transparent to it.
+          Next: how confirmed detections reach the incident commander — and
+          get ranked P1 → P5 for dispatch.
         </p>
         <Link
-          to="/thermal"
+          to="/command"
           className="inline-flex items-center gap-2 self-start rounded-full bg-foreground px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-background hover:bg-foreground/90"
         >
-          Continue → Thermal AI
+          Continue → Command
         </Link>
       </section>
     </>
