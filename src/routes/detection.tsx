@@ -133,14 +133,14 @@ function Page() {
 
       <section className="mx-auto flex max-w-[1400px] flex-col gap-6 px-6 pb-16 md:flex-row md:items-end md:justify-between">
         <p className="max-w-2xl text-muted-foreground">
-          Next: how a thermal sensor sees a human at all — and why smoke is
-          basically transparent to it.
+          Next: how confirmed detections reach the incident commander — and
+          get ranked P1 → P5 for dispatch.
         </p>
         <Link
-          to="/thermal"
+          to="/command"
           className="inline-flex items-center gap-2 self-start rounded-full bg-foreground px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-background hover:bg-foreground/90"
         >
-          Continue → Thermal AI
+          Continue → Command
         </Link>
       </section>
     </>
