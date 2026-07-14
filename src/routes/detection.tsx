@@ -31,11 +31,11 @@ function Page() {
         chapter="01 / Detection"
         title={
           <>
-            YOLO, retrained on heat.{" "}
+            YOLO, tuned for smoke and debris.{" "}
             <span className="text-foreground/40">It sees what we can't.</span>
           </>
         }
-        lede="Visible-light vision dies the moment a smoke column goes black. A thermal-tuned YOLOv8 model — running on the drone's edge GPU — keeps finding people anyway, frame after frame, with confidence scores tight enough to act on."
+        lede="A human pilot's line of sight collapses the moment a smoke column goes black. A YOLOv8 vision model — running on the drone's edge GPU — keeps finding people anyway, frame after frame, with confidence scores tight enough to act on."
         meta="Reading time 5 min · Live demo"
       />
 
