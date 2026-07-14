@@ -8,14 +8,15 @@ export function SiteFooter() {
             PYRA / Vision
           </div>
           <p className="normal-case tracking-normal">
-            AI-assisted firefighting drones. Thermal + YOLO human detection,
-            relayed live to the Incident Commander. Educational concept site.
+            AI-assisted firefighting drones. YOLO human detection with a
+            priority-ranked dispatch board for the Incident Commander.
+            Educational concept site.
           </p>
         </div>
         <div>
           <div className="mb-3 text-foreground">Detection stack</div>
           <ul className="space-y-1 normal-case tracking-normal">
-            <li>YOLOv8 / YOLO-NAS, thermal-tuned</li>
+            <li>YOLOv8 / YOLO-NAS vision models</li>
             <li>PyTorch · ONNX Runtime · TensorRT</li>
             <li>NVIDIA Jetson Orin (edge)</li>
             <li>ROS 2 · MQTT telemetry</li>
@@ -24,8 +25,7 @@ export function SiteFooter() {
         <div>
           <div className="mb-3 text-foreground">Sensors</div>
           <ul className="space-y-1 normal-case tracking-normal">
-            <li>FLIR Boson / Vue TZ — LWIR 7.5–13.5 μm</li>
-            <li>RGB 4K · LiDAR ToF · RTK GNSS</li>
+            <li>RGB 4K camera · LiDAR ToF · RTK GNSS</li>
             <li>Mesh radio + LTE failover</li>
           </ul>
         </div>
