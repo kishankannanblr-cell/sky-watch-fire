@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import heroThermal from "../assets/hero-thermal.jpg";
+import heroImage from "../assets/drone-night.jpg";
 import { HeroFuturistic } from "../components/HeroFuturistic";
 import { LogoStrip } from "../components/LogoStrip";
 import { StatCounter } from "../components/StatCounter";
@@ -7,20 +7,20 @@ import { StatCounter } from "../components/StatCounter";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PYRA / Vision — AI firefighting drones that find people through smoke" },
+      { title: "PYRA / Vision — AI firefighting drones that rank rooms by priority" },
       {
         name: "description",
         content:
-          "AI-assisted firefighting drones: thermal cameras and YOLO models detect humans through dense smoke and debris, relaying every find to the incident commander in under a second.",
+          "AI-assisted firefighting drones: YOLO vision detects humans through smoke and debris, then ranks every room P1 → P5 for the incident commander.",
       },
       { property: "og:title", content: "PYRA / Vision — AI firefighting drones" },
       {
         property: "og:description",
         content:
-          "Thermal + YOLO human detection, live-relayed to the incident commander.",
+          "YOLO human detection + a priority-ranked dispatch board for the incident commander.",
       },
-      { property: "og:image", content: heroThermal },
-      { name: "twitter:image", content: heroThermal },
+      { property: "og:image", content: heroImage },
+      { name: "twitter:image", content: heroImage },
     ],
   }),
   component: Index,
@@ -30,7 +30,7 @@ const triad = [
   {
     code: "01",
     title: "Detect",
-    body: "A thermal-tuned YOLO model finds humans through smoke at 45+ FPS on the drone's edge GPU. Recall stays above 90% where RGB collapses to noise.",
+    body: "A YOLO vision model finds humans through smoke and debris at 45+ FPS on the drone's edge GPU. Recall stays high where a human pilot's line of sight collapses.",
     accent: "text-ember",
   },
   {
