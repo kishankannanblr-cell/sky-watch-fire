@@ -2,7 +2,7 @@ const logos = [
   "PyTorch",
   "ONNX",
   "NVIDIA Jetson",
-  "FLIR",
+  "Ultralytics",
   "ROS 2",
   "OpenCV",
   "TensorRT",
