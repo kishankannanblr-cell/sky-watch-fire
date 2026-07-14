@@ -113,7 +113,7 @@ function Page() {
             </div>
             <ul className="divide-y divide-white/10">
               {[
-                ["Capture (LWIR sensor)", "8 ms"],
+                ["Capture (RGB sensor)", "8 ms"],
                 ["Color normalize + tensor pack", "4 ms"],
                 ["YOLOv8 forward pass (Jetson Orin, INT8)", "22 ms"],
                 ["Classifier + NMS", "6 ms"],
