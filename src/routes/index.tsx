@@ -13,11 +13,11 @@ export const Route = createFileRoute("/")({
         content:
           "AI-assisted firefighting drones: YOLO vision detects humans through smoke and debris, then ranks every room P1 → P5 for the incident commander.",
       },
-      { property: "og:title", content: "GuardianX — AI firefighting drones" },
+      { property: "og:title", content: "GuardianX — AI firefighting drones that rank rooms by priority" },
       {
         property: "og:description",
         content:
-          "YOLO human detection + a priority-ranked dispatch board for the incident commander.",
+          "AI-assisted firefighting drones: YOLO vision detects humans through smoke and debris, then ranks every room P1 → P5 for the incident commander.",
       },
       { property: "og:image", content: heroImage },
       { name: "twitter:image", content: heroImage },
