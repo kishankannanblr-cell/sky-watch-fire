@@ -75,17 +75,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PYRA / Vision — AI firefighting drones" },
+      { title: "GuardianX — AI firefighting drones" },
       {
         name: "description",
         content:
           "AI-assisted firefighting drones: YOLO vision models find humans through smoke and debris, ranked P1 → P5 for the incident commander in under a second.",
       },
-      { name: "author", content: "PYRA Vision" },
+      { name: "author", content: "GuardianX" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { property: "og:title", content: "PYRA / Vision — AI firefighting drones" },
-      { name: "twitter:title", content: "PYRA / Vision — AI firefighting drones" },
+      { property: "og:title", content: "GuardianX — AI firefighting drones" },
+      { name: "twitter:title", content: "GuardianX — AI firefighting drones" },
       { name: "description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },
       { property: "og:description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },
       { name: "twitter:description", content: "Explore the future of firefighting with AI-powered drones and their societal impact." },

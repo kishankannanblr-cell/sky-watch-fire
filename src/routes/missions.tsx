@@ -7,7 +7,7 @@ import { ScenarioStepper } from "../components/ScenarioStepper";
 export const Route = createFileRoute("/missions")({
   head: () => ({
     meta: [
-      { title: "Missions — AI scenarios on the fire ground | PYRA Vision" },
+      { title: "Missions — AI scenarios on the fire ground | GuardianX" },
       {
         name: "description",
         content:

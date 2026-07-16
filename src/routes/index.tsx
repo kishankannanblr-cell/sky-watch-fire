@@ -7,13 +7,13 @@ import { StatCounter } from "../components/StatCounter";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PYRA / Vision — AI firefighting drones that rank rooms by priority" },
+      { title: "GuardianX — AI firefighting drones that rank rooms by priority" },
       {
         name: "description",
         content:
           "AI-assisted firefighting drones: YOLO vision detects humans through smoke and debris, then ranks every room P1 → P5 for the incident commander.",
       },
-      { property: "og:title", content: "PYRA / Vision — AI firefighting drones" },
+      { property: "og:title", content: "GuardianX — AI firefighting drones" },
       {
         property: "og:description",
         content:

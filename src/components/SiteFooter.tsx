@@ -5,7 +5,7 @@ export function SiteFooter() {
         <div>
           <div className="mb-3 flex items-center gap-2 text-foreground">
             <span className="grid h-6 w-6 place-items-center rounded-full bg-ember/20 text-ember">◉</span>
-            PYRA / Vision
+            GuardianX
           </div>
           <p className="normal-case tracking-normal">
             AI-assisted firefighting drones. YOLO human detection with a
@@ -38,7 +38,7 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-rule px-6 py-4 text-center font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-        © 2026 — PYRA / Vision concept
+        © 2026 — GuardianX concept
       </div>
     </footer>
   );
