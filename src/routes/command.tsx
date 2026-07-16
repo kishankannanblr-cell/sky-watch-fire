@@ -8,7 +8,7 @@ import { CommandTelemetry } from "../components/CommandTelemetry";
 export const Route = createFileRoute("/command")({
   head: () => ({
     meta: [
-      { title: "Command — IC relay & live console | PYRA Vision" },
+      { title: "Command — IC relay & live console | GuardianX" },
       {
         name: "description",
         content:

@@ -13,7 +13,7 @@ export function SiteHeader() {
       <div className="glass-panel flex items-center justify-between gap-4 rounded-full px-3 py-2">
         <Link to="/" className="flex items-center gap-2 pl-2 font-mono text-[11px] uppercase tracking-widest">
           <span className="grid h-7 w-7 place-items-center rounded-full bg-ember/20 text-ember">◉</span>
-          <span className="hidden sm:inline">PYRA / Vision</span>
+          <span className="hidden sm:inline">GuardianX</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((n) => (

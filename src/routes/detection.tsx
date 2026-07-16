@@ -6,7 +6,7 @@ import { YoloDetectionDemo } from "../components/YoloDetectionDemo";
 export const Route = createFileRoute("/detection")({
   head: () => ({
     meta: [
-      { title: "Detection — YOLO human detection on a firefighting drone | PYRA Vision" },
+      { title: "Detection — YOLO human detection on a firefighting drone | GuardianX" },
       {
         name: "description",
         content:
