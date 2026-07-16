@@ -5,7 +5,6 @@ const nav: { to: string; label: string; exact?: boolean; hash?: string }[] = [
   { to: "/detection", label: "Detection" },
   { to: "/missions", label: "Missions" },
   { to: "/command", label: "Command" },
-  { to: "/command", label: "Priority", hash: "priority" },
 ];
 
 export function SiteHeader() {
