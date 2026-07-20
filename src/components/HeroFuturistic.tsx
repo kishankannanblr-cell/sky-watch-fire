@@ -66,7 +66,7 @@ export function HeroFuturistic() {
             className="mt-6 text-[44px] font-medium leading-[0.98] tracking-tight md:text-[88px]"
           >
             One model.{" "}
-            <span className="text-foreground/40">Every life ranked.</span>
+            <span className="text-foreground/40">Every life saved.</span>
           </motion.h1>
 
           <p className="mt-6 max-w-xl text-base text-muted-foreground md:text-lg">
