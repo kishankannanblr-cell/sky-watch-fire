@@ -44,9 +44,9 @@ function Page() {
         <CommanderConsole />
       </section>
 
-      <section className="border-t border-white/10 bg-black/20">
+      <section className="border-t border-border bg-secondary/30">
         <div className="mx-auto max-w-[1400px] px-6 py-16">
-          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-4">
+          <div className="mb-6 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
                 04.1 / Telemetry
@@ -64,9 +64,9 @@ function Page() {
       </section>
 
       {/* Priority Ranking */}
-      <section className="border-y border-white/10 bg-black/30">
+      <section className="border-y border-border bg-secondary/30">
         <div className="mx-auto max-w-[1400px] px-6 py-20">
-          <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-white/10 pb-4">
+          <div className="mb-10 flex flex-wrap items-end justify-between gap-6 border-b border-border pb-4">
             <div>
               <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
                 05 / Priority Rank
@@ -98,7 +98,7 @@ function Page() {
         <div className="flex gap-3">
           <Link
             to="/"
-            className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest hover:bg-white/10"
+            className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest hover:bg-foreground/5"
           >
             ← Home
           </Link>

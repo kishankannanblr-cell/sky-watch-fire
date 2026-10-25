@@ -79,13 +79,13 @@ function Index() {
               <Link
                 to="/command"
                 hash="priority"
-                className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest hover:bg-white/10"
+                className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest hover:bg-foreground/5"
               >
                 Priority ranking
               </Link>
             </div>
           </div>
-          <div className="overflow-hidden rounded-2xl border border-white/10">
+          <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
             <img
               src={heroImage}
               alt="Firefighting drone flying a night mission over an active fire ground"
@@ -108,9 +108,9 @@ function Index() {
             Pipeline overview
           </div>
         </div>
-        <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-3">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
           {triad.map((t) => (
-            <div key={t.code} className="bg-background p-8">
+            <div key={t.code} className="bg-card p-8">
               <div className={`font-mono text-xs uppercase tracking-widest ${t.accent}`}>
                 {t.code} · {t.title}
               </div>
@@ -123,7 +123,7 @@ function Index() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-white/10 bg-black/30">
+      <section className="border-y border-border bg-secondary/30">
         <div className="mx-auto grid max-w-[1400px] gap-10 px-6 py-16 sm:grid-cols-2 lg:grid-cols-4">
           <StatCounter value={740} suffix=" ms" label="End-to-end detection latency" />
           <StatCounter value={92} suffix="%" label="Recall on humans in dense smoke" />

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ThemeToggle } from "./ThemeToggle";
 
 const nav: { to: string; label: string; exact?: boolean; hash?: string }[] = [
   { to: "/", label: "Home", exact: true },
@@ -22,7 +23,7 @@ export function SiteHeader() {
               to={n.to}
               hash={n.hash}
               activeOptions={{ exact: n.exact }}
-              activeProps={{ className: "bg-white/8 text-foreground" }}
+              activeProps={{ className: "bg-foreground/10 text-foreground font-medium" }}
               inactiveProps={{ className: "text-muted-foreground hover:text-foreground" }}
               className="rounded-full px-3.5 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors"
             >
@@ -31,10 +32,11 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <span className="pulse-dot hidden items-center rounded-full border border-white/10 bg-black/30 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline-flex">
+          <ThemeToggle />
+          <span className="pulse-dot hidden items-center rounded-full border border-border bg-card/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground sm:inline-flex">
             Live Feed
           </span>
-          <span className="grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-black/30 text-ember">
+          <span className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card/60 text-ember">
             ⚠
           </span>
         </div>

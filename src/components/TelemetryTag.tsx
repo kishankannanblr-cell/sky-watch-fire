@@ -26,7 +26,7 @@ export function TelemetryTag({
       }`}
     >
       <div
-        className={`grid h-9 w-9 place-items-center rounded-full border border-white/10 bg-black/40 ${color}`}
+        className={`grid h-9 w-9 place-items-center rounded-full border border-border bg-card/60 shadow-xs ${color}`}
       >
         {icon ?? "●"}
       </div>

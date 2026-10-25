@@ -108,7 +108,7 @@ export function YoloDetectionDemo() {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black">
+    <div className="relative overflow-hidden rounded-2xl border border-border bg-black shadow-md">
       <img
         src={detectionFrame}
         alt="Aerial frame from a firefighting drone, three partial human figures visible through smoke"
@@ -188,11 +188,11 @@ export function YoloDetectionDemo() {
             className="absolute -translate-y-full"
             style={{ left: `${b.x}%`, top: `${b.y}%` }}
           >
-            <div className="mb-1 inline-block rounded-sm bg-ember px-2 py-1 font-mono text-[9px] uppercase leading-tight tracking-widest text-black">
+            <div className="mb-1 inline-block rounded-sm bg-ember px-2 py-1 font-mono text-[9px] uppercase leading-tight tracking-widest text-black font-semibold">
               <div>
                 {b.label} · {(confs[b.id] ?? 0).toFixed(2)} · {b.trackId}
               </div>
-              <div className="opacity-80">
+              <div className="opacity-90">
                 {(temps[b.id] ?? b.tempC).toFixed(1)}°C · {b.posture} · {b.rangeM} m
               </div>
             </div>
@@ -202,7 +202,7 @@ export function YoloDetectionDemo() {
 
       {/* HUD chrome — top */}
       <div className="pointer-events-none absolute left-3 top-3 flex flex-col items-start gap-1">
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice">
+        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ice backdrop-blur-xs">
           <span className="pulse-dot" />
           YOLOv8 · {fps.toFixed(1)} fps · conf ≥ 0.60
         </div>
@@ -211,59 +211,59 @@ export function YoloDetectionDemo() {
           initial={{ scale: 1.08, color: "#ff6a3d" }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="rounded-full border border-ember/40 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ember"
+          className="rounded-full border border-ember/50 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ember backdrop-blur-xs font-medium"
         >
           Humans detected · {shown.length}
         </motion.div>
       </div>
       <div className="pointer-events-none absolute right-3 top-3 flex flex-col items-end gap-1">
-        <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="rounded-full border border-white/20 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 backdrop-blur-xs">
           RGB 4K · 640×512 crop
         </div>
-        <div className="rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="rounded-full border border-white/20 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 backdrop-blur-xs">
           Gimbal stabilised · AGC on
         </div>
       </div>
 
       {/* Scene analysis */}
-      <div className="pointer-events-none absolute bottom-3 left-3 w-[260px] rounded-md border border-white/10 bg-black/70 p-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
-        <div className="mb-2 flex items-center justify-between border-b border-white/10 pb-1.5 text-ember">
+      <div className="pointer-events-none absolute bottom-3 left-3 w-[260px] rounded-md border border-white/20 bg-black/80 p-3 font-mono text-[10px] uppercase tracking-widest text-zinc-300 backdrop-blur-sm">
+        <div className="mb-2 flex items-center justify-between border-b border-white/15 pb-1.5 text-ember font-medium">
           <span>Scene analysis</span>
           <span className="pulse-dot" />
         </div>
         <dl className="space-y-1">
           <div className="flex justify-between gap-2">
-            <dt>Humans detected</dt>
-            <dd className="text-foreground">{shown.length}</dd>
+            <dt className="text-zinc-400">Humans detected</dt>
+            <dd className="text-zinc-100 font-semibold">{shown.length}</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Ambient (scene avg)</dt>
-            <dd className="text-foreground">{ambient.toFixed(1)}°C</dd>
+            <dt className="text-zinc-400">Ambient (scene avg)</dt>
+            <dd className="text-zinc-100">{ambient.toFixed(1)}°C</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Fire hot spots</dt>
-            <dd className="text-ember">{hotSpots} · active fire</dd>
+            <dt className="text-zinc-400">Fire hot spots</dt>
+            <dd className="text-ember font-medium">{hotSpots} · active fire</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Structural debris</dt>
-            <dd className="text-foreground">NW quadrant</dd>
+            <dt className="text-zinc-400">Structural debris</dt>
+            <dd className="text-zinc-100">NW quadrant</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Smoke opacity</dt>
-            <dd className="text-foreground">87% · vis ≪ 2 m</dd>
+            <dt className="text-zinc-400">Smoke opacity</dt>
+            <dd className="text-zinc-100">87% · vis ≪ 2 m</dd>
           </div>
           <div className="flex justify-between gap-2">
-            <dt>Egress (S corridor)</dt>
-            <dd className="text-ember">blocked</dd>
+            <dt className="text-zinc-400">Egress (S corridor)</dt>
+            <dd className="text-ember font-medium">blocked</dd>
           </div>
         </dl>
       </div>
 
-      <div className="pointer-events-none absolute bottom-3 right-3 rounded-md border border-white/10 bg-black/70 p-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground backdrop-blur-sm">
+      <div className="pointer-events-none absolute bottom-3 right-3 rounded-md border border-white/20 bg-black/80 p-3 font-mono text-[10px] uppercase tracking-widest text-zinc-300 backdrop-blur-sm">
         <div className="space-y-1 text-right">
           <div>AGL 42 m · gimbal −38°</div>
           <div>RTK fix · mesh −71 dBm</div>
-          <div className="text-ice">yolov8s · v3.2 · 9f1c</div>
+          <div className="text-ice font-medium">yolov8s · v3.2 · 9f1c</div>
         </div>
       </div>
     </div>

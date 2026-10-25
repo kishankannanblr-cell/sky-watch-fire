@@ -10,7 +10,7 @@ export function HeroFuturistic() {
         <div className="pointer-events-none absolute -right-24 -top-20 h-[520px] w-[620px] bloom-ice" />
         <div className="pointer-events-none absolute -left-32 bottom-0 h-[420px] w-[520px] bloom-ember opacity-60" />
         {/* starfield */}
-        <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(circle_at_1px_1px,oklch(1_0_0_/_0.08)_1px,transparent_0)] [background-size:22px_22px] opacity-50" />
+        <div className="pointer-events-none absolute inset-0 starfield-grid opacity-50" />
 
         {/* corner telemetry */}
         <div className="pointer-events-none absolute left-6 top-24 hidden md:block">
@@ -84,7 +84,7 @@ export function HeroFuturistic() {
             </Link>
             <Link
               to="/detection"
-              className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground transition hover:bg-white/10"
+              className="glass-panel inline-flex items-center gap-2 rounded-full px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground transition hover:bg-foreground/5"
             >
               See how it works
             </Link>
@@ -94,7 +94,7 @@ export function HeroFuturistic() {
         {/* bottom row */}
         <div className="relative mt-16 flex items-end justify-between">
           <div className="glass-panel flex items-center gap-3 rounded-full px-3 py-2">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-white/10 text-foreground">
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-secondary text-foreground">
               ↓
             </span>
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -108,10 +108,10 @@ export function HeroFuturistic() {
             </div>
             <div className="flex gap-1">
               <span className="h-1 w-10 rounded-full bg-foreground/70" />
-              <span className="h-1 w-6 rounded-full bg-white/15" />
-              <span className="h-1 w-6 rounded-full bg-white/15" />
-              <span className="h-1 w-6 rounded-full bg-white/15" />
-              <span className="h-1 w-6 rounded-full bg-white/15" />
+              <span className="h-1 w-6 rounded-full bg-muted-foreground/25" />
+              <span className="h-1 w-6 rounded-full bg-muted-foreground/25" />
+              <span className="h-1 w-6 rounded-full bg-muted-foreground/25" />
+              <span className="h-1 w-6 rounded-full bg-muted-foreground/25" />
             </div>
           </div>
         </div>

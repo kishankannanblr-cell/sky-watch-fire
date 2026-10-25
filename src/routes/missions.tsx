@@ -69,9 +69,9 @@ function Page() {
 
       {/* Scenario cards */}
       <section className="mx-auto max-w-[1400px] px-6 py-16">
-        <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-3">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
           {SCENARIOS.map((s) => (
-            <article key={s.title} className="bg-background">
+            <article key={s.title} className="bg-card">
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
                   src={s.img}
@@ -82,7 +82,7 @@ function Page() {
                   className="h-full w-full object-cover"
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
-                <div className="absolute left-3 top-3 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ember">
+                <div className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/70 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-ember backdrop-blur-xs">
                   {s.tag}
                 </div>
               </div>
@@ -98,9 +98,9 @@ function Page() {
       </section>
 
       {/* Pipeline */}
-      <section className="border-y border-white/10 bg-black/30">
+      <section className="border-y border-border bg-secondary/30">
         <div className="mx-auto max-w-[1400px] px-6 py-20">
-          <div className="mb-10 flex items-end justify-between gap-6 border-b border-white/10 pb-4">
+          <div className="mb-10 flex items-end justify-between gap-6 border-b border-border pb-4">
             <h2 className="text-2xl font-medium md:text-3xl">
               From sensor to commander · five stages.
             </h2>
@@ -114,15 +114,15 @@ function Page() {
 
       {/* Used in the field */}
       <section className="mx-auto max-w-[1400px] px-6 py-20">
-        <div className="mb-8 flex items-end justify-between gap-6 border-b border-white/10 pb-4">
+        <div className="mb-8 flex items-end justify-between gap-6 border-b border-border pb-4">
           <h2 className="text-2xl font-medium md:text-3xl">Used in the field.</h2>
           <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Tbl. 03.2 — programs
           </div>
         </div>
-        <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
           {FIELD_USE.map(([n, b]) => (
-            <div key={n} className="bg-background p-6">
+            <div key={n} className="bg-card p-6">
               <h3 className="text-base font-medium">{n}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{b}</p>
             </div>

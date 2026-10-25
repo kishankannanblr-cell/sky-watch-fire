@@ -66,22 +66,22 @@ function Page() {
       </section>
 
       {/* Training data */}
-      <section className="border-t border-white/10 bg-black/30">
+      <section className="border-t border-border bg-secondary/30">
         <div className="mx-auto max-w-[1400px] px-6 py-20">
-          <div className="mb-10 flex items-end justify-between gap-6 border-b border-white/10 pb-4">
+          <div className="mb-10 flex items-end justify-between gap-6 border-b border-border pb-4">
             <h2 className="text-2xl font-medium md:text-3xl">How it learns smoke.</h2>
             <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               Tbl. 01.1 — training stack
             </div>
           </div>
-          <div className="grid gap-px overflow-hidden rounded-2xl bg-white/10 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 lg:grid-cols-4">
             {[
               ["COCO Person", "Baseline person class from the COCO dataset — every general-purpose YOLO checkpoint starts here."],
               ["Wildfire Smoke Set", "Field-captured frames of pedestrians partially occluded by smoke and haze."],
               ["Field captures", "120k+ frames from real fire-ground drone flights — survivors prone, partial-occlusion, crawling, post-collapse."],
               ["Synthetic smoke", "Domain-randomized renders: humans in volumetric smoke, varied contrast, debris occlusion."],
             ].map(([t, b]) => (
-              <div key={t} className="bg-background p-6">
+              <div key={t} className="bg-card p-6">
                 <h3 className="text-base font-medium">{t}</h3>
                 <p className="mt-2 text-sm text-muted-foreground">{b}</p>
               </div>
@@ -108,10 +108,10 @@ function Page() {
             </p>
           </div>
           <div className="glass-panel rounded-2xl">
-            <div className="border-b border-white/10 px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <div className="border-b border-border px-6 py-3 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
               Single detection · cold loop
             </div>
-            <ul className="divide-y divide-white/10">
+            <ul className="divide-y divide-border">
               {[
                 ["Capture (RGB sensor)", "8 ms"],
                 ["Color normalize + tensor pack", "4 ms"],

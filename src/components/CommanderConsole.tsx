@@ -152,7 +152,7 @@ export function CommanderConsole() {
   ];
 
   return (
-    <div className="glass-panel grid gap-px overflow-hidden rounded-2xl bg-white/[0.04] lg:grid-cols-[1.4fr_1fr]">
+    <div className="glass-panel grid gap-px overflow-hidden rounded-2xl border border-border bg-border lg:grid-cols-[1.4fr_1fr]">
       {/* Live tile */}
       <div className="relative bg-black">
         <img
@@ -164,10 +164,10 @@ export function CommanderConsole() {
           className="block aspect-[4/3] w-full object-cover"
         />
         <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ember/40" />
-        <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-signal">
+        <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full border border-white/20 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-signal backdrop-blur-xs">
           <span className="pulse-dot" /> Live · UAS-04
         </div>
-        <div className="absolute right-3 top-3 rounded-full border border-white/10 bg-black/60 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="absolute right-3 top-3 rounded-full border border-white/20 bg-black/75 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-zinc-300 backdrop-blur-xs">
           740 ms · mesh 92%
         </div>
         <div className="absolute inset-x-3 bottom-3">
@@ -177,24 +177,24 @@ export function CommanderConsole() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="glass-panel flex items-center gap-3 rounded-xl px-3 py-2"
+              className="glass-panel flex items-center gap-3 rounded-xl border border-white/20 bg-black/85 px-3 py-2 text-white backdrop-blur-md"
             >
               <span
-                className={`grid h-7 w-7 place-items-center rounded-full text-black ${
+                className={`grid h-7 w-7 place-items-center rounded-full text-black font-semibold ${
                   callout.tone === "alert"
                     ? "bg-ember"
                     : callout.tone === "ok"
                       ? "bg-ice"
-                      : "bg-white/30"
+                      : "bg-white/40"
                 }`}
               >
                 {callout.tone === "alert" ? "!" : callout.tone === "ok" ? "✓" : "·"}
               </span>
               <div>
-                <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                   IC callout
                 </div>
-                <div className="text-sm">{callout.text}</div>
+                <div className="text-sm text-zinc-100">{callout.text}</div>
               </div>
             </motion.div>
           </AnimatePresence>
@@ -202,35 +202,35 @@ export function CommanderConsole() {
       </div>
 
       {/* Detection queue + map */}
-      <div className="flex flex-col bg-black/40">
+      <div className="flex flex-col bg-card/75 backdrop-blur-sm">
         {/* Counters */}
-        <div className="grid grid-cols-4 border-b border-white/10 font-mono text-[10px] uppercase tracking-widest">
+        <div className="grid grid-cols-4 border-b border-border font-mono text-[10px] uppercase tracking-widest">
           <div className="px-3 py-2.5">
             <div className="text-muted-foreground">Active</div>
             <div className="text-sm text-foreground">{counts.all}</div>
           </div>
-          <div className="border-l border-white/10 px-3 py-2.5">
+          <div className="border-l border-border px-3 py-2.5">
             <div className="text-muted-foreground">Pending</div>
             <div className="text-sm text-ember">{counts.p}</div>
           </div>
-          <div className="border-l border-white/10 px-3 py-2.5">
+          <div className="border-l border-border px-3 py-2.5">
             <div className="text-muted-foreground">Resolved</div>
             <div className="text-sm text-ice">{counts.c}</div>
           </div>
-          <div className="border-l border-white/10 px-3 py-2.5">
+          <div className="border-l border-border px-3 py-2.5">
             <div className="text-muted-foreground">Dismissed</div>
             <div className="text-sm text-muted-foreground">{counts.d}</div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col gap-2 border-b border-white/10 px-3 py-2">
+        <div className="flex flex-col gap-2 border-b border-border px-3 py-2">
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by ID, bearing, motion…"
-            className="w-full rounded-md border border-white/10 bg-black/40 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ember/60 focus:outline-none"
+            className="w-full rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ember/60 focus:outline-none"
           />
           <div className="flex flex-wrap gap-1.5">
             {filters.map((f) => (
@@ -241,7 +241,7 @@ export function CommanderConsole() {
                 className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest transition ${
                   filter === f.key
                     ? "border-ember/60 bg-ember/15 text-ember"
-                    : `border-white/10 ${f.tone} hover:bg-white/5`
+                    : `border-border ${f.tone} hover:bg-muted/40`
                 }`}
               >
                 {f.label}
@@ -250,28 +250,23 @@ export function CommanderConsole() {
             <button
               type="button"
               onClick={reset}
-              className="ml-auto rounded-full border border-white/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-white/5"
+              className="ml-auto rounded-full border border-border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-muted/40 hover:text-foreground"
             >
               ↻ Reset drill
             </button>
           </div>
         </div>
 
-        <ul className="min-h-[8rem] divide-y divide-white/5">
+        <ul className="min-h-[8rem] divide-y divide-border">
           <AnimatePresence initial={false}>
             {filtered.map((d) => {
               const status = statuses[d.id] ?? "pending";
-              const isHover = hoverId === d.id;
               return (
                 <motion.li
                   key={d.id}
                   layout
-                  initial={{ opacity: 0, x: 16, backgroundColor: "rgba(255,106,61,0.18)" }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                    backgroundColor: isHover ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0)",
-                  }}
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
                   exit={{
                     opacity: 0,
                     x: status === "confirmed" ? 320 : -320,
@@ -281,7 +276,7 @@ export function CommanderConsole() {
                   onMouseEnter={() => setHoverId(d.id)}
                   onMouseLeave={() => setHoverId(null)}
                   onClick={() => setFocusId(d.id)}
-                  className="cursor-pointer px-4 py-3"
+                  className="cursor-pointer px-4 py-3 transition-colors hover:bg-muted/40"
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -290,7 +285,7 @@ export function CommanderConsole() {
                           status === "confirmed"
                             ? "bg-ice/15 text-ice"
                             : status === "dismissed"
-                              ? "bg-white/10 text-muted-foreground"
+                              ? "bg-muted text-muted-foreground"
                               : "bg-ember/15 text-ember"
                         }`}
                       >
@@ -319,7 +314,7 @@ export function CommanderConsole() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-mono text-xs text-ice">{d.conf.toFixed(2)}</div>
+                      <div className="font-mono text-xs text-ice font-medium">{d.conf.toFixed(2)}</div>
                       <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                         {decidedAt[d.id] ?? fmtTime(d.arriveAt)}
                       </div>
@@ -343,7 +338,7 @@ export function CommanderConsole() {
                           e.stopPropagation();
                           decide(d.id, "dismissed");
                         }}
-                        className="flex-1 rounded-md border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:bg-white/10"
+                        className="flex-1 rounded-md border border-border bg-muted/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:bg-muted/60 hover:text-foreground"
                       >
                         × Dismiss
                       </button>
@@ -371,8 +366,8 @@ export function CommanderConsole() {
         </ul>
 
         {/* Interactive tactical map */}
-        <div className="relative mt-auto h-72 border-t border-white/10">
-          <div className="pointer-events-none absolute left-3 top-3 z-[500] rounded-full border border-white/10 bg-black/70 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="relative mt-auto h-72 border-t border-border">
+          <div className="pointer-events-none absolute left-3 top-3 z-[500] rounded-full border border-border bg-card/90 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-foreground backdrop-blur-sm">
             Tactical map · click marker for popup
           </div>
           <TacticalMap

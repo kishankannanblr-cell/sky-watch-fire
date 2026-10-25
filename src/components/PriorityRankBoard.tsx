@@ -39,9 +39,9 @@ const SEED_INCIDENTS: Incident[] = [
 ];
 
 const toneStyles: Record<Tone, { badge: string; ring: string; text: string; chip: string }> = {
-  critical: { badge: "bg-ember text-black", ring: "ring-ember/40", text: "text-ember", chip: "border-ember/40 bg-ember/10 text-ember" },
-  sar: { badge: "bg-ice text-black", ring: "ring-ice/40", text: "text-ice", chip: "border-ice/40 bg-ice/10 text-ice" },
-  suppression: { badge: "bg-signal text-black", ring: "ring-signal/40", text: "text-signal", chip: "border-signal/40 bg-signal/10 text-signal" },
+  critical: { badge: "bg-ember text-white font-bold", ring: "ring-ember/40", text: "text-ember font-medium", chip: "border-ember/40 bg-ember/10 text-ember" },
+  sar: { badge: "bg-ice text-white font-bold", ring: "ring-ice/40", text: "text-ice font-medium", chip: "border-ice/40 bg-ice/10 text-ice" },
+  suppression: { badge: "bg-signal text-white font-bold", ring: "ring-signal/40", text: "text-signal font-medium", chip: "border-signal/40 bg-signal/10 text-signal" },
 };
 
 const ALL_RANKS: Rank["code"][] = ["P1", "P2", "P3", "P4", "P5"];
@@ -99,27 +99,27 @@ export function PriorityRankBoard() {
   return (
     <div id="priority" className="grid gap-8">
       {/* Rubric */}
-      <div className="glass-panel overflow-hidden rounded-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3">
-          <div className="font-mono text-[10px] uppercase tracking-widest text-ember">
+      <div className="glass-panel overflow-hidden rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3">
+          <div className="font-mono text-[10px] uppercase tracking-widest text-ember font-medium">
             Aspects to consider when giving a Priority Rank
           </div>
           <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
             Fire state × victim volume — not raw confidence
           </div>
         </div>
-        <p className="border-b border-white/10 px-5 py-4 text-sm leading-relaxed text-muted-foreground">
+        <p className="border-b border-border px-5 py-4 text-sm leading-relaxed text-muted-foreground">
           Firefighters can't trust a raw score like{" "}
-          <code className="text-ice">0.91</code> vs.{" "}
-          <code className="text-ice">0.63</code> in a life-or-death call without context.
+          <code className="text-ice font-medium">0.91</code> vs.{" "}
+          <code className="text-ice font-medium">0.63</code> in a life-or-death call without context.
           The dashboard categorizes detections by logical state and victim volume, so every rank maps directly to the tactical team being dispatched — Search &amp; Rescue vs. Suppression, single vs. multi-victim.
         </p>
-        <ul className="divide-y divide-white/5">
+        <ul className="divide-y divide-border">
           {RANK_RUBRIC.map((r) => {
             const s = toneStyles[r.tone];
             return (
               <li key={r.code} className="grid gap-3 px-5 py-4 md:grid-cols-[70px_1.4fr_1.4fr_1fr] md:items-center">
-                <span className={`grid h-10 w-10 place-items-center rounded-full font-mono text-xs font-medium ring-1 ${s.badge} ${s.ring}`}>
+                <span className={`grid h-10 w-10 place-items-center rounded-full font-mono text-xs font-bold ring-1 ${s.badge} ${s.ring}`}>
                   {r.code}
                 </span>
                 <div>
@@ -141,31 +141,31 @@ export function PriorityRankBoard() {
       </div>
 
       {/* Live ranked incidents */}
-      <div className="glass-panel overflow-hidden rounded-2xl">
+      <div className="glass-panel overflow-hidden rounded-2xl border border-border">
         {/* Counters */}
-        <div className="grid grid-cols-3 border-b border-white/10 font-mono text-[10px] uppercase tracking-widest">
+        <div className="grid grid-cols-3 border-b border-border font-mono text-[10px] uppercase tracking-widest">
           <div className="px-4 py-2.5">
             <div className="text-muted-foreground">Active</div>
-            <div className="text-sm text-ember">{active.length}</div>
+            <div className="text-sm text-ember font-medium">{active.length}</div>
           </div>
-          <div className="border-l border-white/10 px-4 py-2.5">
+          <div className="border-l border-border px-4 py-2.5">
             <div className="text-muted-foreground">Dispatched</div>
-            <div className="text-sm text-ice">{dispatched.length}</div>
+            <div className="text-sm text-ice font-medium">{dispatched.length}</div>
           </div>
-          <div className="border-l border-white/10 px-4 py-2.5">
+          <div className="border-l border-border px-4 py-2.5">
             <div className="text-muted-foreground">Filtered view</div>
             <div className="text-sm text-foreground">{visible.length}</div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col gap-2 border-b border-white/10 px-5 py-3">
+        <div className="flex flex-col gap-2 border-b border-border px-5 py-3">
           <input
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by INC-*, rank, grid, or keyword…"
-            className="w-full rounded-md border border-white/10 bg-black/40 px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ember/60 focus:outline-none"
+            className="w-full rounded-md border border-border bg-background px-3 py-1.5 font-mono text-xs text-foreground placeholder:text-muted-foreground focus:border-ember focus:outline-none"
           />
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">Ranks:</span>
@@ -180,7 +180,7 @@ export function PriorityRankBoard() {
                   className={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest transition ${
                     on
                       ? s.chip
-                      : "border-white/10 text-muted-foreground line-through hover:bg-white/5"
+                      : "border-border text-muted-foreground line-through hover:bg-muted/30"
                   }`}
                 >
                   {r}
@@ -190,14 +190,14 @@ export function PriorityRankBoard() {
             <button
               type="button"
               onClick={reset}
-              className="ml-auto rounded-full border border-white/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-white/5"
+              className="ml-auto rounded-full border border-border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:bg-muted/30 hover:text-foreground"
             >
               ↻ Reset board
             </button>
           </div>
         </div>
 
-        <ul className="divide-y divide-white/5">
+        <ul className="divide-y divide-border">
           <AnimatePresence initial={false}>
             {visible.map((inc) => {
               const rank = RANK_RUBRIC.find((r) => r.code === inc.rank)!;
@@ -211,10 +211,10 @@ export function PriorityRankBoard() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: 320, transition: { duration: 0.35 } }}
                   transition={{ duration: 0.3 }}
-                  className="grid gap-4 px-5 py-4 transition-colors hover:bg-white/[0.03] md:grid-cols-[80px_1.2fr_1.4fr_auto]"
+                  className="grid gap-4 px-5 py-4 transition-colors hover:bg-muted/30 md:grid-cols-[80px_1.2fr_1.4fr_auto]"
                 >
                   <div className="flex items-center gap-2">
-                    <span className={`relative grid h-11 w-11 place-items-center rounded-full font-mono text-xs font-medium ring-1 ${s.badge} ${s.ring}`}>
+                    <span className={`relative grid h-11 w-11 place-items-center rounded-full font-mono text-xs font-bold ring-1 ${s.badge} ${s.ring}`}>
                       {inc.rank}
                       {critical && (
                         <motion.span
@@ -227,8 +227,8 @@ export function PriorityRankBoard() {
                     </span>
                   </div>
                   <div>
-                    <div className="text-sm">
-                      {inc.id} <span className="text-muted-foreground">· {rank.category}</span>
+                    <div className="text-sm font-medium">
+                      {inc.id} <span className="text-muted-foreground font-normal">· {rank.category}</span>
                     </div>
                     <div className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
                       {inc.grid} · {String(inc.bearing).padStart(3, "0")}°
@@ -238,12 +238,12 @@ export function PriorityRankBoard() {
                     <p className="text-sm text-muted-foreground">{inc.note}</p>
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       <span className={`inline-flex rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${
-                        inc.victims >= 2 ? "border-ember/40 bg-ember/10 text-ember" : inc.victims === 1 ? "border-ice/40 bg-ice/10 text-ice" : "border-white/15 bg-white/[0.03] text-muted-foreground"
+                        inc.victims >= 2 ? "border-ember/40 bg-ember/10 text-ember" : inc.victims === 1 ? "border-ice/40 bg-ice/10 text-ice" : "border-border bg-muted/30 text-muted-foreground"
                       }`}>
                         {inc.victims} victim{inc.victims === 1 ? "" : "s"}
                       </span>
                       <span className={`inline-flex rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-widest ${
-                        inc.fire ? "border-ember/40 bg-ember/10 text-ember" : "border-white/15 bg-white/[0.03] text-muted-foreground"
+                        inc.fire ? "border-ember/40 bg-ember/10 text-ember" : "border-border bg-muted/30 text-muted-foreground"
                       }`}>
                         {inc.fire ? "Active fire" : "No visible fire"}
                       </span>
@@ -263,7 +263,7 @@ export function PriorityRankBoard() {
                     <button
                       type="button"
                       onClick={() => standdown(inc)}
-                      className="rounded-md border border-white/15 bg-white/[0.03] px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:bg-white/10"
+                      className="rounded-md border border-border bg-muted/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground transition hover:bg-muted/60 hover:text-foreground"
                     >
                       × Stand down
                     </button>
@@ -280,8 +280,8 @@ export function PriorityRankBoard() {
         </ul>
 
         {dispatched.length > 0 && (
-          <div className="border-t border-white/10 bg-black/40 px-5 py-3">
-            <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-ice">
+          <div className="border-t border-border bg-secondary/30 px-5 py-3">
+            <div className="mb-2 font-mono text-[10px] uppercase tracking-widest text-ice font-medium">
               Dispatched log · {dispatched.length}
             </div>
             <ul className="flex flex-wrap gap-2">
@@ -297,7 +297,7 @@ export function PriorityRankBoard() {
           </div>
         )}
 
-        <div className="border-t border-white/10 px-5 py-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="border-t border-border px-5 py-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
           Order is deterministic. P1 stays on top regardless of detection time or raw confidence.
         </div>
       </div>

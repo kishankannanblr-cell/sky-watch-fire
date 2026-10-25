@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useTheme } from "./ThemeProvider";
 
 type Stage = "capture" | "inference" | "relay" | "callout";
 
@@ -34,22 +35,17 @@ const CONFIDENCE = Array.from({ length: 24 }).map((_, i) => ({
   threshold: 0.75,
 }));
 
-const STAGE_META: Record<Stage, { label: string; color: string }> = {
-  capture: { label: "Capture", color: "rgb(124,196,255)" },
-  inference: { label: "Inference", color: "rgb(255,106,61)" },
-  relay: { label: "Relay", color: "rgb(180,240,120)" },
-  callout: { label: "Callout", color: "rgb(200,120,255)" },
-};
-
-const TOOLTIP_STYLE = {
-  background: "rgba(10,10,14,0.95)",
-  border: "1px solid rgba(255,255,255,0.15)",
-  borderRadius: 8,
-  fontFamily: "ui-monospace, monospace",
-  fontSize: 11,
+const STAGE_META: Record<Stage, { label: string; colorDark: string; colorLight: string }> = {
+  capture: { label: "Capture", colorDark: "rgb(124,196,255)", colorLight: "rgb(2,132,199)" },
+  inference: { label: "Inference", colorDark: "rgb(255,106,61)", colorLight: "rgb(234,88,12)" },
+  relay: { label: "Relay", colorDark: "rgb(180,240,120)", colorLight: "rgb(22,163,74)" },
+  callout: { label: "Callout", colorDark: "rgb(200,120,255)", colorLight: "rgb(147,51,234)" },
 };
 
 export function CommandTelemetry() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const [hidden, setHidden] = useState<Set<Stage>>(new Set());
   const toggle = (s: Stage) =>
     setHidden((prev) => {
@@ -73,17 +69,35 @@ export function CommandTelemetry() {
     return totals;
   }, []);
 
+  const tooltipStyle = {
+    background: isDark ? "rgba(10,10,14,0.95)" : "rgba(255,255,255,0.98)",
+    border: `1px solid ${isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.12)"}`,
+    borderRadius: 8,
+    fontFamily: "ui-monospace, monospace",
+    fontSize: 11,
+    color: isDark ? "#ffffff" : "#111827",
+    boxShadow: isDark ? "0 8px 24px rgba(0,0,0,0.5)" : "0 8px 24px rgba(0,0,0,0.08)",
+  };
+
+  const axisStroke = isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.45)";
+  const gridStroke = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.08)";
+  const brushStroke = isDark ? "rgba(124,196,255,0.5)" : "rgba(2,132,199,0.7)";
+  const brushFill = isDark ? "rgba(124,196,255,0.08)" : "rgba(2,132,199,0.08)";
+  const lineColor = isDark ? "rgb(124,196,255)" : "rgb(2,132,199)";
+  const refLineColor = isDark ? "rgb(255,106,61)" : "rgb(234,88,12)";
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       {/* Latency */}
-      <div className="glass-panel overflow-hidden rounded-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3 font-mono text-[10px] uppercase tracking-widest">
-          <span className="text-ember">Latency breakdown · ms per stage</span>
+      <div className="glass-panel overflow-hidden rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3 font-mono text-[10px] uppercase tracking-widest">
+          <span className="text-ember font-medium">Latency breakdown · ms per stage</span>
           <span className="text-muted-foreground">click legend to toggle</span>
         </div>
         <div className="flex flex-wrap gap-2 px-5 pt-3">
           {stages.map((s) => {
             const off = hidden.has(s);
+            const color = isDark ? STAGE_META[s].colorDark : STAGE_META[s].colorLight;
             return (
               <button
                 key={s}
@@ -91,13 +105,13 @@ export function CommandTelemetry() {
                 onClick={() => toggle(s)}
                 className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest transition ${
                   off
-                    ? "border-white/10 text-muted-foreground line-through"
-                    : "border-white/20 text-foreground"
+                    ? "border-border text-muted-foreground line-through"
+                    : "border-border text-foreground hover:bg-muted/40"
                 }`}
               >
                 <span
                   className="h-2 w-2 rounded-full"
-                  style={{ background: STAGE_META[s].color, opacity: off ? 0.3 : 1 }}
+                  style={{ background: color, opacity: off ? 0.3 : 1 }}
                 />
                 {STAGE_META[s].label} · {totalByStage[s]}ms
               </button>
@@ -107,21 +121,21 @@ export function CommandTelemetry() {
         <div className="h-64 px-2 py-3">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={LATENCY}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
               <XAxis
                 dataKey="frame"
-                stroke="rgba(255,255,255,0.4)"
+                stroke={axisStroke}
                 tick={{ fontSize: 10, fontFamily: "ui-monospace, monospace" }}
               />
               <YAxis
-                stroke="rgba(255,255,255,0.4)"
+                stroke={axisStroke}
                 tick={{ fontSize: 10, fontFamily: "ui-monospace, monospace" }}
                 unit="ms"
               />
               <Tooltip
-                contentStyle={TOOLTIP_STYLE}
-                labelStyle={{ color: "rgb(255,106,61)" }}
-                cursor={{ fill: "rgba(255,255,255,0.04)" }}
+                contentStyle={tooltipStyle}
+                labelStyle={{ color: isDark ? "rgb(255,106,61)" : "rgb(234,88,12)" }}
+                cursor={{ fill: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)" }}
               />
               <Legend
                 wrapperStyle={{ fontSize: 10, fontFamily: "ui-monospace, monospace" }}
@@ -132,7 +146,7 @@ export function CommandTelemetry() {
                     key={s}
                     dataKey={s}
                     stackId="lat"
-                    fill={STAGE_META[s].color}
+                    fill={isDark ? STAGE_META[s].colorDark : STAGE_META[s].colorLight}
                     name={STAGE_META[s].label}
                   />
                 ),
@@ -143,36 +157,36 @@ export function CommandTelemetry() {
       </div>
 
       {/* Confidence */}
-      <div className="glass-panel overflow-hidden rounded-2xl">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-3 font-mono text-[10px] uppercase tracking-widest">
-          <span className="text-ember">Confidence · rolling 24s</span>
+      <div className="glass-panel overflow-hidden rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-3 font-mono text-[10px] uppercase tracking-widest">
+          <span className="text-ember font-medium">Confidence · rolling 24s</span>
           <span className="text-muted-foreground">drag brush to zoom</span>
         </div>
         <div className="h-64 px-2 py-3">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={CONFIDENCE}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
               <XAxis
                 dataKey="label"
-                stroke="rgba(255,255,255,0.4)"
+                stroke={axisStroke}
                 tick={{ fontSize: 10, fontFamily: "ui-monospace, monospace" }}
               />
               <YAxis
                 domain={[0.4, 1]}
-                stroke="rgba(255,255,255,0.4)"
+                stroke={axisStroke}
                 tick={{ fontSize: 10, fontFamily: "ui-monospace, monospace" }}
               />
               <Tooltip
-                contentStyle={TOOLTIP_STYLE}
-                labelStyle={{ color: "rgb(124,196,255)" }}
+                contentStyle={tooltipStyle}
+                labelStyle={{ color: lineColor }}
               />
               <ReferenceLine
                 y={0.75}
-                stroke="rgb(255,106,61)"
+                stroke={refLineColor}
                 strokeDasharray="4 3"
                 label={{
                   value: "IC threshold",
-                  fill: "rgb(255,106,61)",
+                  fill: refLineColor,
                   fontSize: 10,
                   fontFamily: "ui-monospace, monospace",
                   position: "insideTopRight",
@@ -181,17 +195,17 @@ export function CommandTelemetry() {
               <Line
                 type="monotone"
                 dataKey="conf"
-                stroke="rgb(124,196,255)"
+                stroke={lineColor}
                 strokeWidth={2}
-                dot={{ r: 2, fill: "rgb(124,196,255)" }}
+                dot={{ r: 2, fill: lineColor }}
                 activeDot={{ r: 5 }}
                 name="Confidence"
               />
               <Brush
                 dataKey="label"
                 height={20}
-                stroke="rgba(124,196,255,0.5)"
-                fill="rgba(124,196,255,0.08)"
+                stroke={brushStroke}
+                fill={brushFill}
                 travellerWidth={8}
               />
             </LineChart>

@@ -74,7 +74,7 @@ export default function TacticalMapInner({
       zoom={17}
       scrollWheelZoom
       className="h-full w-full"
-      style={{ background: "#000" }}
+      style={{ background: "transparent" }}
     >
       <LayersControl position="topright">
         <LayersControl.BaseLayer checked name="Satellite">
@@ -87,6 +87,12 @@ export default function TacticalMapInner({
         <LayersControl.BaseLayer name="Dark">
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            attribution="&copy; CARTO &copy; OpenStreetMap"
+          />
+        </LayersControl.BaseLayer>
+        <LayersControl.BaseLayer name="Light">
+          <TileLayer
+            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
             attribution="&copy; CARTO &copy; OpenStreetMap"
           />
         </LayersControl.BaseLayer>
@@ -145,11 +151,11 @@ export default function TacticalMapInner({
               }}
             >
               <Popup>
-                <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 12 }}>
+                <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 12, color: "#111827" }}>
                   <div>
-                    <b>{d.id}</b> · conf {d.conf.toFixed(2)}
+                    <b style={{ color: "#000000" }}>{d.id}</b> · conf {d.conf.toFixed(2)}
                   </div>
-                  <div>
+                  <div style={{ color: "#4b5563" }}>
                     {String(d.bearing).padStart(3, "0")}° · {d.dist} m
                   </div>
                   {d.status === "pending" && (
@@ -157,11 +163,13 @@ export default function TacticalMapInner({
                       <button
                         onClick={() => onConfirm(d.id)}
                         style={{
-                          background: "rgb(124,196,255)",
-                          color: "#000",
+                          background: "rgb(234,88,12)",
+                          color: "#fff",
+                          fontWeight: 600,
                           padding: "3px 8px",
                           borderRadius: 4,
                           fontSize: 11,
+                          cursor: "pointer",
                         }}
                       >
                         Confirm
@@ -169,11 +177,12 @@ export default function TacticalMapInner({
                       <button
                         onClick={() => onDismiss(d.id)}
                         style={{
-                          background: "#333",
+                          background: "#4b5563",
                           color: "#fff",
                           padding: "3px 8px",
                           borderRadius: 4,
                           fontSize: 11,
+                          cursor: "pointer",
                         }}
                       >
                         Dismiss
@@ -181,7 +190,7 @@ export default function TacticalMapInner({
                     </div>
                   )}
                   {d.status === "confirmed" && (
-                    <div style={{ marginTop: 4, color: "rgb(30,120,200)" }}>
+                    <div style={{ marginTop: 4, color: "rgb(2,132,199)", fontWeight: 600 }}>
                       ✓ Confirmed · relayed
                     </div>
                   )}

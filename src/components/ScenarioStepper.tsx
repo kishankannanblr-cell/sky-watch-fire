@@ -48,8 +48,8 @@ export function ScenarioStepper() {
                 onClick={() => setI(idx)}
                 className={`flex w-full items-center justify-between gap-3 whitespace-nowrap border-l-2 px-4 py-3 text-left transition ${
                   active
-                    ? "border-ember bg-white/5 text-foreground"
-                    : "border-white/10 text-muted-foreground hover:bg-white/[0.03] hover:text-foreground"
+                    ? "border-ember bg-card text-foreground font-medium shadow-xs"
+                    : "border-border text-muted-foreground hover:bg-muted/40 hover:text-foreground"
                 }`}
               >
                 <span className="font-mono text-[10px] uppercase tracking-widest">
